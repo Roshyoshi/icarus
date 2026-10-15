@@ -1,0 +1,75 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 44 and seed -2437706851829368132 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 53152] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/Identity.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-8173371874963467129/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-8173371874963467129/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-8173371874963467129/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-8173371874963467129/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Identity
+Linting of module Identity
+Starting... (2026-10-14 23:08:33)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:33.
+Error: Invariant Distinct is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ generation = ( "main" :> 0 @@
+  "child-a" :> 0 @@
+  "sibling-b" :> 0 @@
+  "grandchild" :> 0 @@
+  "other-provider" :> 0 )
+/\ parent = ( "main" :> "" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "" )
+/\ badCall = FALSE
+/\ binding = ( "main" :> "" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "" )
+
+State 2: <StartMain("main",1) line 22, col 3 to line 25, col 33 of module Identity>
+/\ generation = ( "main" :> 1 @@
+  "child-a" :> 0 @@
+  "sibling-b" :> 0 @@
+  "grandchild" :> 0 @@
+  "other-provider" :> 0 )
+/\ parent = ( "main" :> "" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "" )
+/\ badCall = FALSE
+/\ binding = ( "main" :> "main" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "" )
+
+State 3: <StartMain("other-provider",1) line 22, col 3 to line 25, col 33 of module Identity>
+/\ generation = ( "main" :> 1 @@
+  "child-a" :> 0 @@
+  "sibling-b" :> 0 @@
+  "grandchild" :> 0 @@
+  "other-provider" :> 1 )
+/\ parent = ( "main" :> "" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "" )
+/\ badCall = FALSE
+/\ binding = ( "main" :> "main" @@
+  "child-a" :> "" @@
+  "sibling-b" :> "" @@
+  "grandchild" :> "" @@
+  "other-provider" :> "main" )
+
+9 states generated, 8 distinct states found, 5 states left on queue.
+The depth of the complete state graph search is 3.
+Finished in 00s at (2026-10-14 23:08:33)

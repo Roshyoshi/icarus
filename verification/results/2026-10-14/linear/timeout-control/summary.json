@@ -1,0 +1,121 @@
+{
+  "started_utc": "2026-10-15T03:11:43.503082Z",
+  "finished_utc": "2026-10-15T03:11:46.95586Z",
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "binary_sha256": "09717a512a487987c55cdb68af80d4933ada3602861f76e0f9054687b3beae62",
+  "binary_version": {
+    "protocol": 1,
+    "sqlite_source_id": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "sqlite_version": "3.53.2",
+    "version": "0.1.0"
+  },
+  "go_version": "go1.26.8",
+  "goos": "darwin",
+  "goarch": "arm64",
+  "checker": "github.com/anishathalye/porcupine v1.3.0",
+  "verifier_source_sha256": {
+    "campaign.go": "2ae577df40cbaf7754494fb6ca4844c24f67a0123784adca95ed4adce5f6e43a",
+    "go.mod": "60b4e76ce6ffafb70dc13a04ae8f84333309a8543feb8b3d0e077bc90f425a6d",
+    "go.sum": "5cead10045d5ba52ace8649af6cf4a6bc71fc754bc7c7fd13973f423e8cf1c3d",
+    "main.go": "53c24bc4a27d71c575343c53599acecddd4c89c4d440e2bdc3124f52ebe6735e",
+    "model.go": "ea5e539e609b20d84030548f0173cdaf5074ce808e4f31c287f63259511cfd73",
+    "model_test.go": "d5a247c5aa5b17bfe5770f44991aed0b2d9300974791318777f6436719708742",
+    "transport.go": "f8d2dc1b8c3f21c273363729946bed32d54c5a16e06c84b037578785f53d7442"
+  },
+  "histories_sha256": "a9e9cda3b54b5abc556d40e4d9d5c6044cb3e925c07f66b9d88b8d54c315466e",
+  "seed": 20261014,
+  "start_index": 0,
+  "requested_histories": 1,
+  "requested_workload_calls_per_history": 32,
+  "history_jobs": 1,
+  "completed_histories": 1,
+  "outcomes": {
+    "Unknown": 1
+  },
+  "concurrency_strata": {
+    "2": 1
+  },
+  "phase_calls": {
+    "audit": 19,
+    "audit_before_replay": 1,
+    "fault": 1,
+    "lifecycle": 5,
+    "recovery": 1,
+    "setup": 8,
+    "workload": 32
+  },
+  "route_calls": {
+    "cli": 39,
+    "mcp": 28
+  },
+  "method_calls": {
+    "ack": 6,
+    "bind": 7,
+    "cell_cas": 8,
+    "cell_read": 3,
+    "inbox": 14,
+    "launch_start": 4,
+    "members": 3,
+    "send": 13,
+    "task_create": 2,
+    "task_finish": 5,
+    "task_read": 2
+  },
+  "method_route_calls": {
+    "cli:ack": 4,
+    "cli:bind": 7,
+    "cli:cell_cas": 5,
+    "cli:cell_read": 1,
+    "cli:inbox": 5,
+    "cli:launch_start": 4,
+    "cli:members": 1,
+    "cli:send": 8,
+    "cli:task_create": 1,
+    "cli:task_finish": 3,
+    "mcp:ack": 2,
+    "mcp:cell_cas": 3,
+    "mcp:cell_read": 2,
+    "mcp:inbox": 9,
+    "mcp:members": 2,
+    "mcp:send": 5,
+    "mcp:task_create": 1,
+    "mcp:task_finish": 2,
+    "mcp:task_read": 2
+  },
+  "response_kinds": {
+    "known_abort": 1,
+    "response": 66
+  },
+  "fault_by_concurrency": {
+    "before_commit/clients-2": 1
+  },
+  "fault_outcomes": {
+    "before_commit:known_abort": 1
+  },
+  "public_error_classes": {
+    "does not belong": 1,
+    "only task owner": 1,
+    "operation_id reused": 1,
+    "stale launch": 2,
+    "terminal task result": 2
+  },
+  "workload_overlapping_pairs": 13,
+  "workload_submitted_overlapping_pairs": 13,
+  "histories_with_workload_overlap": 1,
+  "maximum_workload_inflight": 2,
+  "checker_ms": {
+    "max": 0.333,
+    "min": 0.333,
+    "p50": 0.333,
+    "p95": 0.333
+  },
+  "wall_seconds": 3.452750375,
+  "limitations": [
+    "Finite generated histories, not exhaustive schedule exploration or a proof.",
+    "Intervals measure client invocation/return and request-submitted/return; they do not instrument SQLite lock overlap.",
+    "Fault outcomes: known_abort is before_commit exit86; known_commit is after_commit exit86; unknown is SIGKILL without a protocol reply, bounded by observed process death.",
+    "A public replay supplies possible generated IDs for crash transitions, not a commit oracle; prior public reads constrain effect-or-no-effect alternatives.",
+    "No journal, SQL tables, or implementation transaction order are read by the checker.",
+    "No native model calls, credentials, power-loss simulation, network filesystem, or liveness proof."
+  ]
+}

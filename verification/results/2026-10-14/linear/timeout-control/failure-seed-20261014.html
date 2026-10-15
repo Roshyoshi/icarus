@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Porcupine</title>
+    <style>
+      html {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+text {
+  dominant-baseline: middle;
+}
+
+#legend {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(3px);
+  padding: 5px 2px 1px 2px;
+  border-radius: 4px;
+}
+
+#canvas {
+  margin-top: 45px;
+}
+
+#calc {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.bg {
+  fill: transparent;
+}
+
+.divider {
+  stroke: #ccc;
+  stroke-width: 1;
+}
+
+.history-rect {
+  stroke: #888;
+  stroke-width: 1;
+  fill: #42d1f5;
+}
+
+.client-annotation-rect {
+  stroke: #888;
+  stroke-width: 1;
+  fill: #e0e0e0;
+}
+
+.link {
+  fill: #206475;
+  cursor: pointer;
+}
+
+.selected {
+  stroke-width: 5;
+}
+
+.target-rect {
+  opacity: 0;
+}
+
+.history-text {
+  font-size: 0.9rem;
+  font-family:
+    Menlo,
+    Courier New,
+    monospace;
+}
+
+.hidden {
+  opacity: 0.2;
+}
+
+.hidden line {
+  opacity: 0.5; /* note: this is multiplicative */
+}
+
+.linearization {
+  stroke: rgba(0, 0, 0, 0.5);
+}
+
+.linearization-invalid {
+  stroke: rgba(255, 0, 0, 0.5);
+}
+
+.linearization-point {
+  stroke-width: 5;
+}
+
+.linearization-line {
+  stroke-width: 2;
+}
+
+.tooltip {
+  position: absolute;
+  display: none;
+  width: max-content;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 0.8rem;
+}
+
+.inactive {
+  display: none;
+}
+
+    </style>
+  </head>
+  <body>
+    <div id="legend">
+      <svg xmlns="http://www.w3.org/2000/svg" width="660" height="20" viewBox="0 0 660 20">
+        <text x="0" y="10">Clients</text>
+        <line x1="50" y1="0" x2="70" y2="20" stroke="#000" stroke-width="1"></line>
+        <text x="70" y="10">Time</text>
+        <line x1="110" y1="10" x2="200" y2="10" stroke="#000" stroke-width="2"></line>
+        <polygon points="200,5 200,15, 210,10" fill="#000"></polygon>
+        <rect x="300" y="5" width="10" height="10" fill="rgba(0, 0, 0, 0.5)"></rect>
+        <text x="315" y="10">Valid LP</text>
+        <rect x="400" y="5" width="10" height="10" fill="rgba(255, 0, 0, 0.5)"></rect>
+        <text x="415" y="10">Invalid LP</text>
+        <text x="520" y="10" id="jump-link" class="link">[ jump to first error ]</text>
+      </svg>
+    </div>
+    <div id="canvas"></div>
+    <div id="calc"></div>
+    <script>
+      'use strict'
+
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+function svgnew(tag, attributes) {
+  const element = document.createElementNS(SVG_NS, tag)
+  svgattr(element, attributes)
+  return element
+}
+
+function svgattr(element, attributes) {
+  if (attributes) {
+    for (const k in attributes) {
+      if (Object.hasOwn(attributes, k)) {
+        element.setAttributeNS(null, k, attributes[k])
+      }
+    }
+  }
+}
+
+function svgattach(parent, child) {
+  // eslint-disable-next-line unicorn/prefer-dom-node-append
+  return parent.appendChild(child)
+}
+
+function svgadd(element, tag, attributes) {
+  return svgattach(element, svgnew(tag, attributes))
+}
+
+function newArray(n, function_) {
+  const array = Array.from({length: n})
+  for (let i = 0; i < n; i++) {
+    array[i] = function_(i)
+  }
+
+  return array
+}
+
+function arrayEq(a, b) {
+  if (a === b) {
+    return true
+  }
+
+  if (a === undefined || a === null || b === undefined || b === null) {
+    return false
+  }
+
+  if (a.length !== b.length) {
+    return false
+  }
+
+  for (const [i, element] of a.entries()) {
+    if (element !== b[i]) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function formatCallReturn(callTime, returnTime) {
+  return '<br><br>Call: ' + callTime + '<br><br>Return: ' + returnTime
+}
+
+// eslint-disable-next-line no-unused-vars, complexity
+function render(data) {
+  const PADDING = 10
+  const BOX_HEIGHT = 30
+  const BOX_SPACE = 15
+  const EPSILON = 20
+  const LINE_BLEED = 5
+  const BOX_GAP = 20
+  const BOX_TEXT_PADDING = 10
+  const HISTORY_RECT_RADIUS = 4
+
+  const annotations = data.Annotations
+  const coreHistory = data.Partitions
+  // For simplicity, make annotations look like more history
+  const allData = [...coreHistory, {History: annotations}]
+
+  let maxClient = -1
+  for (const partition of allData) {
+    for (const element of partition.History) {
+      maxClient = Math.max(maxClient, element.ClientId)
+    }
+  }
+
+  // "real" clients, not including tags
+  const realClients = maxClient + 1
+  // We treat each unique annotation tag as another "client"
+  const tags = new Set()
+  for (const annot of annotations) {
+    const tag = annot.Tag
+    if (tag.length > 0) {
+      tags.add(tag)
+    }
+  }
+
+  // Add synthetic client numbers
+  const tag2ClientId = {}
+  // `tags` is a collection of strings, so we do want to sort lexicographically
+  // eslint-disable-next-line unicorn/require-array-sort-compare
+  const sortedTags = [...tags].toSorted()
+  for (const tag of sortedTags) {
+    maxClient += 1
+    tag2ClientId[tag] = maxClient
+  }
+
+  for (const annot of annotations) {
+    const tag = annot.Tag
+    if (tag.length > 0) {
+      annot.ClientId = tag2ClientId[tag]
+    }
+  }
+
+  // Total number of clients now includes these synthetic clients
+  const nClient = maxClient + 1
+
+  // Prepare some useful data to be used later:
+  // - Add a GID to each event
+  // - Create a mapping from GIDs back to events
+  // - Create a set of all timestamps
+  // - Create a set of all start timestamps
+  const allTimestamps = new Set()
+  const startTimestamps = new Set()
+  const endTimestamps = new Set()
+  let gid = 0
+  const byGid = {}
+  for (const partition of allData) {
+    for (const element of partition.History) {
+      allTimestamps.add(element.Start)
+      startTimestamps.add(element.Start)
+      endTimestamps.add(element.End)
+      allTimestamps.add(element.End)
+      // Give elements GIDs
+      element.Gid = gid
+      byGid[gid] = element
+      gid++
+    }
+  }
+
+  let sortedTimestamps = [...allTimestamps].toSorted((a, b) => a - b)
+
+  // If one event has the same end time as another's start time, that means that
+  // they are concurrent, and we need to display them with overlap. We do this
+  // by tweaking the events that share the end time, updating the time to
+  // end+epsilon, so we have overlap.
+  //
+  // We do not render a good visualization in the situation where a single
+  // client has two events where one has an end time that matches the other's
+  // start time.  There isn't an easy way to handle this, because these two
+  // operations are concurrent (see the comment in model.go for more details for
+  // why it must be this way), and we can't display them with overlap on the
+  // same row cleanly.
+  const epsilon = 16
+  // Coordinated with computeVisualizationData, which uses an incrementing
+  // counter multiplied by 100, so it's safe to adjust timestamps by += epsilon
+  // without it overlapping with another adjusted timestamp (2*16 < 100)
+  for (const [index, partition] of allData.entries()) {
+    if (index === allData.length - 1) {
+      continue // Last partition is the annotations
+    }
+
+    for (const element of partition.History) {
+      const end = element.End
+      if (startTimestamps.has(end)) {
+        element.End = end + epsilon
+        allTimestamps.add(element.End)
+      }
+    }
+  }
+
+  // Handle display of (1) annotations where one has the same end time as
+  // another's start time, and (2) point-in-time annotations, on the same row.
+  //
+  // Unlike operations, where we interpret the start and end times as a closed
+  // interval (and where they have to be displayed with overlap, to be able to
+  // render linearizations and partial linearizations correctly), annotations
+  // are for display purposes only and we can interpret annotations with
+  // different start/end times as open intervals, and render two annotations
+  // with times (a, b) and (b, c) without overlap. We can also handle the
+  // situation where we have a point-in-time annotation with times (b, b).
+  //
+  // This code currently does not handle the case where we have two
+  // point-in-time annotations with the same tag at the same timestamp.
+  //
+  // We keep the annotation adjustment epsilon even smaller (dividing by 2), so
+  // adjusting an event's end time forward by epsilon doesn't overlap with an
+  // annotation's start time that's adjusted forwards (the adjustment of
+  // annotations goes in the opposite direction as that for events).
+  for (const element of allData.at(-1).History) {
+    if (element.End === element.Start) {
+      // Point-in-time annotation: we adjust these to have a non-zero-duration;
+      // we only need to edit the end timestamp, and we can leave the start
+      // as-is
+      element.End += epsilon / 4
+      allTimestamps.add(element.End)
+    } else {
+      // Annotation touching another event or annotation
+      if (startTimestamps.has(element.End)) {
+        element.End -= epsilon / 2
+        allTimestamps.add(element.End)
+      }
+
+      if (endTimestamps.has(element.Start)) {
+        element.Start += epsilon / 2
+        allTimestamps.add(element.Start)
+      }
+    }
+  }
+
+  // Update sortedTimestamps, because we created some new timestamps.
+  sortedTimestamps = [...allTimestamps].toSorted((a, b) => a - b)
+
+  // Compute layout.
+  //
+  // We warp time to make it easier to see what's going on. We can think
+  // of there being a monotonically increasing mapping from timestamps to
+  // x-positions. This mapping should satisfy some criteria to make the
+  // visualization interpretable:
+  //
+  // - distinguishability: there should be some minimum distance between
+  // unequal timestamps
+  // - visible text: history boxes should be wide enough to fit the text
+  // they contain
+  // - enough space for LPs: history boxes should be wide enough to fit
+  // all linearization points that go through them, while maintaining
+  // readability of linearizations (where each LP in a sequence is spaced
+  // some minimum distance away from the previous one)
+  //
+  // Originally, I thought about this as a linear program:
+  //
+  // - variables for every unique timestamp, x_i = warp(timestamp_i)
+  // - objective: minimize sum x_i
+  // - constraint: non-negative
+  // - constraint: ordering + distinguishability, timestamp_i < timestamp_j -> x_i + EPS < x_j
+  // - constraint: visible text, size_text_j < x_{timestamp_j_end} - x_{timestamp_j_start}
+  // - constraint: linearization lines have points that fit within box, ...
+  //
+  // This used to actually be implemented using an LP solver (without the
+  // linearization point part, though that should be doable too), but
+  // then I realized it's possible to solve optimally using a greedy
+  // left-to-right scan in linear time.
+  //
+  // So that is what we do here. We optimally solve the above, and while
+  // doing so, also compute some useful information (e.g. x-positions of
+  // linearization points) that is useful later.
+  const xPos = {}
+  // Compute some information about history elements, sorted by end time;
+  // the most important information here is box width.
+  const byEnd = allData
+    .flatMap((partition) =>
+      partition.History.map((element) => {
+        // Compute width of the text inside the history element by actually
+        // drawing it (in a hidden div)
+        const scratch = document.querySelector('#calc')
+        scratch.innerHTML = ''
+        const svg = svgadd(scratch, 'svg')
+        const text = svgadd(svg, 'text', {
+          'text-anchor': 'middle',
+          class: 'history-text',
+        })
+        text.textContent = element.Description
+        const bbox = text.getBBox()
+        const width = bbox.width + 2 * BOX_TEXT_PADDING
+        return {
+          start: element.Start,
+          end: element.End,
+          width,
+          gid: element.Gid,
+        }
+      }),
+    )
+    .toSorted((a, b) => a.end - b.end)
+  // Some preprocessing for linearization points and illegal next
+  // linearizations. We need to figure out where exactly LPs end up
+  // as we go, so we can make sure event boxes are wide enough.
+  const eventToLinearizations = newArray(gid, () => []) // Event -> [{index, position}]
+  const eventIllegalLast = newArray(gid, () => []) // Event -> [index]
+  const allLinearizations = []
+  let lgid = 0
+  for (const partition of coreHistory) {
+    for (const lin of partition.PartialLinearizations) {
+      const globalized = [] // Linearization with global indexes instead of partition-local ones
+      const included = new Set() // For figuring out illegal next LPs
+      for (const [position, id] of lin.entries()) {
+        included.add(id.Index)
+        const eventGid = partition.History[id.Index].Gid
+        globalized.push(eventGid)
+        eventToLinearizations[eventGid].push({index: lgid, position})
+      }
+
+      allLinearizations.push(globalized)
+      let minEnd = Infinity
+      for (const [index, element] of partition.History.entries()) {
+        if (!included.has(index)) {
+          minEnd = Math.min(minEnd, element.End)
+        }
+      }
+
+      for (const [index, element] of partition.History.entries()) {
+        if (!included.has(index) && element.Start < minEnd) {
+          eventIllegalLast[element.Gid].push(lgid)
+        }
+      }
+
+      lgid++
+    }
+  }
+
+  const linearizationPositions = newArray(lgid, () => []) // [[xpos]]
+  // Okay, now we're ready to do the left-to-right scan.
+  // Solve timestamp -> xPos.
+  let eventIndex = 0
+  xPos[sortedTimestamps[0]] = 0 // Positions start at 0
+  for (let i = 1; i < sortedTimestamps.length; i++) {
+    // Left-to-right scan, finding minimum time we can use
+    const ts = sortedTimestamps[i]
+    // Ensure some gap from last timestamp
+    let pos = xPos[sortedTimestamps[i - 1]] + BOX_GAP
+    // Ensure that text fits in boxes
+    while (eventIndex < byEnd.length && byEnd[eventIndex].end <= ts) {
+      // Push our position as far as necessary to accommodate text in box
+      const event_ = byEnd[eventIndex]
+      const textEndPos = xPos[event_.start] + event_.width
+      pos = Math.max(pos, textEndPos)
+      // Ensure that LPs fit in box.
+      //
+      // When placing the end of an event, for all partial linearizations
+      // that include that event, for the prefix that comes before that event,
+      // all their start points must have been placed already, so we can figure
+      // out the minimum width that the box needs to be to accommodate the LP.
+      for (const li of [
+        ...eventToLinearizations[event_.gid],
+        ...eventIllegalLast[event_.gid].map((index) => ({
+          index,
+          position: allLinearizations[index].length - 1,
+        })),
+      ]) {
+        const {index, position} = li
+        for (let j = linearizationPositions[index].length; j <= position; j++) {
+          // Determine past points
+          const previous =
+            linearizationPositions[index].length > 0 ? linearizationPositions[index][j - 1] : null
+
+          const nextGid = allLinearizations[index][j]
+          const nextPos =
+            previous === null
+              ? xPos[byGid[nextGid].Start]
+              : Math.max(xPos[byGid[nextGid].Start], previous + EPSILON)
+
+          linearizationPositions[index].push(nextPos)
+        }
+
+        // This next line only really makes sense for the ones in
+        // eventToLinearizations, not the ones from eventIllegalLast,
+        // but it's safe to do it for all points, so we don't bother to
+        // distinguish.
+        pos = Math.max(pos, linearizationPositions[index][position])
+      }
+
+      // Ensure that illegal next LPs fit in box too
+      for (const li of eventIllegalLast[event_.gid]) {
+        const lin = linearizationPositions[li]
+        const previous = lin.at(-1)
+        pos = Math.max(pos, previous + EPSILON)
+      }
+
+      eventIndex++
+    }
+
+    xPos[ts] = pos
+  }
+
+  // Get maximum tag width
+  let maxTagWidth = 0
+  for (let i = 0; i < nClient; i++) {
+    const tag = i < realClients ? i.toString() : sortedTags[i - realClients]
+    const scratch = document.querySelector('#calc')
+    scratch.innerHTML = ''
+    const svg = svgadd(scratch, 'svg')
+    const text = svgadd(svg, 'text', {
+      'text-anchor': 'end',
+    })
+    text.textContent = tag
+    const bbox = text.getBBox()
+    const width = bbox.width + 2 * BOX_TEXT_PADDING
+    if (width > maxTagWidth) {
+      maxTagWidth = width
+    }
+  }
+
+  const t0x = PADDING + maxTagWidth // X-pos of line at t=0
+
+  // Solved, now draw UI.
+
+  let selected = false
+  let selectedIndex = [-1, -1]
+
+  const canvasHeight = 2 * PADDING + BOX_HEIGHT * nClient + BOX_SPACE * (nClient - 1)
+  const canvasWidth = 2 * PADDING + maxTagWidth + xPos[sortedTimestamps.at(-1)]
+  const svg = svgadd(document.querySelector('#canvas'), 'svg', {
+    height: canvasHeight,
+    width: canvasWidth,
+  })
+
+  // Draw background, etc.
+  const bg = svgadd(svg, 'g')
+  const bgRect = svgadd(bg, 'rect', {
+    height: canvasHeight,
+    width: canvasWidth,
+    x: 0,
+    y: 0,
+    class: 'bg',
+  })
+  bgRect.addEventListener('click', handleBgClick)
+  for (let i = 0; i < nClient; i++) {
+    const text = svgadd(bg, 'text', {
+      x: PADDING + maxTagWidth - BOX_TEXT_PADDING,
+      y: PADDING + BOX_HEIGHT / 2 + i * (BOX_HEIGHT + BOX_SPACE),
+      'text-anchor': 'end',
+    })
+    text.textContent = i < realClients ? i : sortedTags[i - realClients]
+  }
+
+  // Vertical line at t=0
+  svgadd(bg, 'line', {
+    x1: t0x,
+    y1: PADDING,
+    x2: t0x,
+    y2: canvasHeight - PADDING,
+    class: 'divider',
+  })
+  // Horizontal line dividing clients from annotation tags, but only if there are tags
+  if (tags.size > 0) {
+    const annotationLineY = PADDING + realClients * (BOX_HEIGHT + BOX_SPACE) - BOX_SPACE / 2
+    svgadd(bg, 'line', {
+      x1: PADDING,
+      y1: annotationLineY,
+      x2: t0x,
+      y2: annotationLineY,
+      class: 'divider',
+    })
+  }
+
+  // Draw history
+  const historyLayers = []
+  const historyRects = []
+  const targetRects = svgnew('g')
+  for (const [partitionIndex, partition] of allData.entries()) {
+    const l = svgadd(svg, 'g')
+    historyLayers.push(l)
+    const rects = []
+    for (const [elementIndex, element] of partition.History.entries()) {
+      const g = svgadd(l, 'g')
+      const rx = xPos[element.Start]
+      const width = xPos[element.End] - rx
+      const x = rx + t0x
+      const y = PADDING + element.ClientId * (BOX_HEIGHT + BOX_SPACE)
+      const rectClass = element.Annotation ? 'client-annotation-rect' : 'history-rect'
+      rects.push(
+        svgadd(g, 'rect', {
+          height: BOX_HEIGHT,
+          width,
+          x,
+          y,
+          rx: HISTORY_RECT_RADIUS,
+          ry: HISTORY_RECT_RADIUS,
+          class: rectClass,
+          style:
+            element.Annotation && element.BackgroundColor.length > 0
+              ? `fill: ${element.BackgroundColor};`
+              : '',
+        }),
+      )
+      const text = svgadd(g, 'text', {
+        x: x + width / 2,
+        y: y + BOX_HEIGHT / 2,
+        'text-anchor': 'middle',
+        class: 'history-text',
+        style:
+          element.Annotation && element.TextColor.length > 0 ? `fill: ${element.TextColor};` : '',
+      })
+      text.textContent = element.Description
+      // We don't add mouseTarget to g, but to targetRects, because we
+      // want to layer this on top of everything at the end; otherwise, the
+      // LPs and lines will be over the target, which will create holes
+      // where hover etc. won't work
+      const mouseTarget = svgadd(targetRects, 'rect', {
+        height: BOX_HEIGHT,
+        width,
+        x,
+        y,
+        class: 'target-rect',
+        'data-partition': partitionIndex,
+        'data-index': elementIndex,
+      })
+      mouseTarget.addEventListener('mouseover', handleMouseOver)
+      mouseTarget.addEventListener('mousemove', handleMouseMove)
+      mouseTarget.addEventListener('mouseout', handleMouseOut)
+      mouseTarget.addEventListener('click', handleClick)
+    }
+
+    historyRects.push(rects)
+  }
+
+  // Draw partial linearizations
+  const illegalLast = coreHistory.map((partition) =>
+    partition.PartialLinearizations.map(() => new Set()),
+  )
+  const largestIllegal = coreHistory.map(() => ({}))
+  const largestIllegalLength = coreHistory.map(() => ({}))
+  const partialLayers = []
+  const errorPoints = []
+  for (const [partitionIndex, partition] of coreHistory.entries()) {
+    const l = []
+    partialLayers.push(l)
+    for (const [linIndex, lin] of partition.PartialLinearizations.entries()) {
+      const g = svgadd(svg, 'g')
+      l.push(g)
+      let previousX = null
+      let previousY = null
+      let previousElement = null
+      const included = new Set()
+      for (const id of lin) {
+        const element = partition.History[id.Index]
+        const hereX = t0x + xPos[element.Start]
+        const x = previousX === null ? hereX : Math.max(hereX, previousX + EPSILON)
+        const y = PADDING + element.ClientId * (BOX_HEIGHT + BOX_SPACE) - LINE_BLEED
+        // Line from previous
+        if (previousElement !== null) {
+          svgadd(g, 'line', {
+            x1: previousX,
+            x2: x,
+            y1:
+              previousElement.ClientId >= element.ClientId
+                ? previousY
+                : previousY + BOX_HEIGHT + 2 * LINE_BLEED,
+            y2: previousElement.ClientId <= element.ClientId ? y : y + BOX_HEIGHT + 2 * LINE_BLEED,
+            class: 'linearization linearization-line',
+          })
+        }
+
+        // Current line
+        svgadd(g, 'line', {
+          x1: x,
+          x2: x,
+          y1: y,
+          y2: y + BOX_HEIGHT + 2 * LINE_BLEED,
+          class: 'linearization linearization-point',
+        })
+        previousX = x
+        previousY = y
+        previousElement = element
+        included.add(id.Index)
+      }
+
+      // Show possible but illegal next linearizations
+      // a history element is a possible next try
+      // if no other history element must be linearized earlier
+      // i.e. forall others, this.start < other.end
+      let minEnd = Infinity
+      for (const [index, element] of partition.History.entries()) {
+        if (!included.has(index)) {
+          minEnd = Math.min(minEnd, element.End)
+        }
+      }
+
+      for (const [index, element] of partition.History.entries()) {
+        if (!included.has(index) && element.Start < minEnd) {
+          const hereX = t0x + xPos[element.Start]
+          const x = previousX === null ? hereX : Math.max(hereX, previousX + EPSILON)
+          const y = PADDING + element.ClientId * (BOX_HEIGHT + BOX_SPACE) - LINE_BLEED
+          // Line from previous
+          svgadd(g, 'line', {
+            x1: previousX,
+            x2: x,
+            y1:
+              previousElement.ClientId >= element.ClientId
+                ? previousY
+                : previousY + BOX_HEIGHT + 2 * LINE_BLEED,
+            y2: previousElement.ClientId <= element.ClientId ? y : y + BOX_HEIGHT + 2 * LINE_BLEED,
+            class: 'linearization-invalid linearization-line',
+          })
+          // Current line
+          const point = svgadd(g, 'line', {
+            x1: x,
+            x2: x,
+            y1: y,
+            y2: y + BOX_HEIGHT + 2 * LINE_BLEED,
+            class: 'linearization-invalid linearization-point',
+          })
+          errorPoints.push({
+            x,
+            partition: partitionIndex,
+            index: lin.at(-1).Index, // NOTE not index
+            element: point,
+          })
+          illegalLast[partitionIndex][linIndex].add(index)
+          // eslint-disable-next-line max-depth
+          if (
+            !Object.hasOwn(largestIllegalLength[partitionIndex], index) ||
+            largestIllegalLength[partitionIndex][index] < lin.length
+          ) {
+            largestIllegalLength[partitionIndex][index] = lin.length
+            largestIllegal[partitionIndex][index] = linIndex
+          }
+        }
+      }
+    }
+  }
+
+  errorPoints.sort((a, b) => a.x - b.x)
+
+  // Attach targetRects
+  svgattach(svg, targetRects)
+
+  // Tooltip
+  // eslint-disable-next-line unicorn/prefer-dom-node-append
+  const tooltip = document.querySelector('#canvas').appendChild(document.createElement('div'))
+  tooltip.setAttribute('class', 'tooltip')
+
+  function handleMouseOver() {
+    if (selected) {
+      return
+    }
+
+    const partition = Number(this.dataset.partition)
+    const index = Number(this.dataset.index)
+    highlight(partition, index)
+    tooltip.style.display = 'block'
+  }
+
+  function linearizationIndex(partition, index) {
+    // Show this linearization
+    if (partition >= coreHistory.length) {
+      // Annotation
+      return null
+    }
+
+    if (Object.hasOwn(coreHistory[partition].Largest, index)) {
+      return coreHistory[partition].Largest[index]
+    }
+
+    if (Object.hasOwn(largestIllegal[partition], index)) {
+      return largestIllegal[partition][index]
+    }
+
+    return null
+  }
+
+  function highlight(partition, index) {
+    // Hide all but this partition
+    for (const [i, layer] of historyLayers.entries()) {
+      layer.classList.toggle('hidden', i !== partition)
+    }
+
+    // Hide all but the relevant linearization
+    for (const layer of partialLayers) {
+      for (const g of layer) {
+        g.classList.add('hidden')
+      }
+    }
+
+    // Show this linearization
+    const maxIndex = linearizationIndex(partition, index)
+    if (maxIndex !== null) {
+      partialLayers[partition][maxIndex].classList.remove('hidden')
+    }
+
+    updateJump()
+  }
+
+  let lastTooltip = [null, null, null, null, null]
+  function handleMouseMove(event_) {
+    // Keep tooltip static if selected
+    if (selected) {
+      return
+    }
+
+    const partition = Number(this.dataset.partition)
+    const index = Number(this.dataset.index)
+    const [sPartition, sIndex] = selectedIndex
+    const thisTooltip = [partition, index, selected, sPartition, sIndex]
+
+    if (!arrayEq(lastTooltip, thisTooltip)) {
+      // If selected, show info relevant to the selected linearization
+      const maxIndex = selected
+        ? linearizationIndex(sPartition, sIndex)
+        : linearizationIndex(partition, index)
+
+      const callTime = allData[partition].History[index].OriginalStart
+      const returnTime = allData[partition].History[index].OriginalEnd
+
+      let metadata = ''
+      if (partition < coreHistory.length) {
+        const m = allData[partition].History[index].Metadata
+        if (m !== '') {
+          metadata = m + '<br><br>'
+        }
+      }
+
+      if (partition >= coreHistory.length) {
+        // Annotation
+        const details = annotations[index].Details
+        tooltip.innerHTML = details.length === 0 ? '&langle;no details&rangle;' : details
+      } else if (selected && sPartition !== partition) {
+        tooltip.innerHTML =
+          metadata + 'Not part of selected partition.' + formatCallReturn(callTime, returnTime)
+      } else if (maxIndex === null) {
+        tooltip.innerHTML =
+          metadata +
+          (selected
+            ? 'Selected element is not part of any partial linearization.'
+            : 'Not part of any partial linearization.') +
+          formatCallReturn(callTime, returnTime)
+      } else {
+        const lin = coreHistory[partition].PartialLinearizations[maxIndex]
+        let previous = null
+        let current = null
+        let found = false
+        for (const element of lin) {
+          previous = current
+          current = element
+          if (current.Index === index) {
+            found = true
+            break
+          }
+        }
+
+        let message = metadata
+
+        if (found) {
+          // Part of linearization
+          if (previous !== null) {
+            message +=
+              '<strong>Previous state:</strong><br>' + previous.StateDescription + '<br><br>'
+          }
+
+          message +=
+            '<strong>New state:</strong><br>' +
+            current.StateDescription +
+            formatCallReturn(callTime, returnTime)
+        } else if (illegalLast[partition][maxIndex].has(index)) {
+          // Illegal next one
+          message +=
+            '<strong>Previous state:</strong><br>' +
+            lin.at(-1).StateDescription +
+            '<br><br><strong>New state:</strong><br>&langle;invalid op&rangle;' +
+            formatCallReturn(callTime, returnTime)
+        } else {
+          // Not part of this one
+          message +=
+            "Not part of selected element's partial linearization." +
+            formatCallReturn(callTime, returnTime)
+        }
+
+        tooltip.innerHTML = message
+      }
+
+      lastTooltip = thisTooltip
+    }
+
+    // Make sure tooltip doesn't overflow off the right side of the screen
+    const maxX =
+      document.documentElement.scrollLeft +
+      document.documentElement.clientWidth -
+      PADDING -
+      tooltip.getBoundingClientRect().width
+    tooltip.style.left = Math.min(event_.pageX + 20, maxX) + 'px'
+    tooltip.style.top = event_.pageY + 20 + 'px'
+  }
+
+  function handleMouseOut() {
+    if (selected) {
+      return
+    }
+
+    resetHighlight()
+    tooltip.style.display = 'none'
+    lastTooltip = [null, null, null, null, null]
+  }
+
+  function resetHighlight() {
+    // Show all layers
+    for (const layer of historyLayers) {
+      layer.classList.remove('hidden')
+    }
+
+    // Show longest linearizations, which are first
+    for (const layers of partialLayers) {
+      for (const [i, l] of layers.entries()) {
+        l.classList.toggle('hidden', i !== 0)
+      }
+    }
+
+    updateJump()
+  }
+
+  // Store jump click handler so we can remove it before adding a new one
+  let jumpClickHandler = null
+
+  function updateJump() {
+    const jump = document.querySelector('#jump-link')
+    // Find first non-hidden point
+    // feels a little hacky, but it works
+    const point = errorPoints.find((pt) => !pt.element.parentElement.classList.contains('hidden'))
+
+    // Remove any existing event listener
+    if (jumpClickHandler) {
+      jump.removeEventListener('click', jumpClickHandler)
+      jumpClickHandler = null
+    }
+
+    if (point) {
+      jump.classList.remove('inactive')
+      jumpClickHandler = () => {
+        point.element.scrollIntoView({behavior: 'smooth', inline: 'center', block: 'center'})
+        if (!selected) {
+          select(point.partition, point.index)
+        }
+      }
+
+      jump.addEventListener('click', jumpClickHandler)
+    } else {
+      jump.classList.add('inactive')
+    }
+  }
+
+  function handleClick(event_) {
+    const partition = Number(this.dataset.partition)
+    const index = Number(this.dataset.index)
+    if (selected) {
+      const [sPartition, sIndex] = selectedIndex
+      if (partition === sPartition && index === sIndex) {
+        deselect()
+        // Note: we're still displaying the tooltip, but once the user's mouse moves, it'll get updated
+        return
+      }
+
+      historyRects[sPartition][sIndex].classList.remove('selected')
+    }
+
+    select(partition, index)
+
+    tooltip.style.display = 'block'
+    // Set static tooltip position when selecting
+    const maxX =
+      document.documentElement.scrollLeft +
+      document.documentElement.clientWidth -
+      PADDING -
+      tooltip.getBoundingClientRect().width
+    tooltip.style.left = Math.min(event_.pageX + 20, maxX) + 'px'
+    tooltip.style.top = event_.pageY + 20 + 'px'
+  }
+
+  function handleBgClick() {
+    deselect()
+
+    tooltip.style.display = 'none'
+    lastTooltip = [null, null, null, null, null]
+  }
+
+  function select(partition, index) {
+    selected = true
+    selectedIndex = [partition, index]
+    highlight(partition, index)
+    historyRects[partition][index].classList.add('selected')
+  }
+
+  function deselect() {
+    if (!selected) {
+      return
+    }
+
+    selected = false
+    resetHighlight()
+    const [partition, index] = selectedIndex
+    historyRects[partition][index].classList.remove('selected')
+  }
+
+  handleMouseOut() // Initialize, same as mouse out
+}
+
+
+      const data = {"Partitions":[{"History":[{"ClientId":0,"Start":0,"OriginalStart":"163500","End":100,"OriginalEnd":"118688167","Description":"{\"version\":1,\"operation_id\":\"op-0001\",\"command\":{\"instance\":\"instance-0\",\"method\":\"launch_start\",\"provider\":\"codex\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":200,"OriginalStart":"118692708","End":300,"OriginalEnd":"192724083","Description":"{\"version\":1,\"operation_id\":\"op-0002\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"agent\":null,\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-0\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"parent\":null}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":400,"OriginalStart":"196718250","End":500,"OriginalEnd":"252647417","Description":"{\"version\":1,\"operation_id\":\"op-0003\",\"command\":{\"instance\":\"instance-1\",\"method\":\"launch_start\",\"provider\":\"claude\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":600,"OriginalStart":"252652500","End":700,"OriginalEnd":"308647375","Description":"{\"version\":1,\"operation_id\":\"op-0004\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"agent\":null,\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-1\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"parent\":null}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":800,"OriginalStart":"311738583","End":900,"OriginalEnd":"354326458","Description":"{\"version\":1,\"operation_id\":\"op-0005\",\"command\":{\"instance\":\"instance-2\",\"method\":\"launch_start\",\"provider\":\"codex\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":1000,"OriginalStart":"354333458","End":1100,"OriginalEnd":"400184542","Description":"{\"version\":1,\"operation_id\":\"op-0006\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"agent\":null,\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-2\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"parent\":null}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":1200,"OriginalStart":"403236625","End":1300,"OriginalEnd":"475442625","Description":"{\"version\":1,\"operation_id\":\"op-0007\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"agent\":\"child\",\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-0\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"parent\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":1400,"OriginalStart":"475447625","End":1500,"OriginalEnd":"523449042","Description":"{\"version\":1,\"operation_id\":\"op-0008\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"agent\":\"child\",\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-1\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"member\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"parent\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":1600,"OriginalStart":"523465167","End":1700,"OriginalEnd":"596824833","Description":"{\"version\":1,\"operation_id\":\"op-0009\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"description\":\"task-0\",\"method\":\"task_create\",\"owner\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":1800,"OriginalStart":"596829625","End":1900,"OriginalEnd":"657963708","Description":"{\"version\":1,\"operation_id\":\"op-0010\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"description\":\"task-1\",\"method\":\"task_create\",\"owner\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":2000,"OriginalStart":"657982625","End":2300,"OriginalEnd":"715298375","Description":"{\"version\":1,\"operation_id\":\"op-0012\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"body\":\"seed-4675241498960219429\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"84d61139-2fd3-4bf6-bb7b-13389298eb11\",\"sequence\":2}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":2100,"OriginalStart":"657982875","End":2200,"OriginalEnd":"685001208","Description":"{\"version\":1,\"operation_id\":\"op-0011\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"seed-912497271556751494\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"376a67b7-3d06-4f37-9f89-4a01f3a91f20\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":2400,"OriginalStart":"715312292","End":2700,"OriginalEnd":"806189792","Description":"{\"version\":1,\"operation_id\":\"op-0014\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"seed-1133972579671004615\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"effcceda-549c-4a41-867a-6ea7cd2dad53\",\"sequence\":4}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":2500,"OriginalStart":"715365208","End":2600,"OriginalEnd":"760975208","Description":"{\"version\":1,\"operation_id\":\"op-0013\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"body\":\"seed-4455824619965983946\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"537668dd-8413-4b24-a949-b8d48a7ea8ee\",\"sequence\":3}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":2800,"OriginalStart":"806204042","End":3100,"OriginalEnd":"931607583","Description":"{\"version\":1,\"operation_id\":\"op-0016\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"seed-7278084610592497194\",\"method\":\"send\",\"to\":\"80702fdb-2129-4202-b249-7d22d25c2842\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"42e8568b-10fb-4ec2-9de1-9e1298f06236\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":2900,"OriginalStart":"806211542","End":3000,"OriginalEnd":"878355208","Description":"{\"version\":1,\"operation_id\":\"op-0015\",\"member\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"body\":\"seed-1232669542235193208\",\"method\":\"send\",\"to\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"f1e21418-3694-4ce3-9c14-51608d3c4080\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":3200,"OriginalStart":"931627208","End":3500,"OriginalEnd":"1034254417","Description":"{\"version\":1,\"operation_id\":\"op-0018\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"body\":\"seed-1348719718434430394\",\"method\":\"send\",\"to\":\"80702fdb-2129-4202-b249-7d22d25c2842\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"fea07b55-04a9-4830-917c-c1c5dbbb021e\",\"sequence\":2}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":3300,"OriginalStart":"931630083","End":3400,"OriginalEnd":"983564667","Description":"{\"version\":1,\"operation_id\":\"op-0017\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"body\":\"seed-244759324573889867\",\"method\":\"send\",\"to\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"2d28a874-12f0-4699-abe8-bd41dfd98a47\",\"sequence\":2}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":3600,"OriginalStart":"1034277375","End":3900,"OriginalEnd":"1161971333","Description":"{\"version\":1,\"operation_id\":\"op-0019\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-0\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":3700,"OriginalStart":"1034277833","End":3800,"OriginalEnd":"1098585792","Description":"{\"version\":1,\"operation_id\":\"op-0020\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-1\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":true}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":4000,"OriginalStart":"1161997375","End":4300,"OriginalEnd":"1239500208","Description":"{\"version\":1,\"operation_id\":\"op-0022\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-3\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":4100,"OriginalStart":"1162004625","End":4200,"OriginalEnd":"1203851792","Description":"{\"version\":1,\"operation_id\":\"op-0021\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-2\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":4400,"OriginalStart":"1239517500","End":4600,"OriginalEnd":"1282087750","Description":"{\"version\":1,\"operation_id\":\"op-0024\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-5\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":4500,"OriginalStart":"1239594875","End":4700,"OriginalEnd":"1315204833","Description":"{\"version\":1,\"operation_id\":\"op-0023\",\"member\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"expected\":0,\"key\":\"cell-0\",\"method\":\"cell_cas\",\"value\":\"contender-4\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":4800,"OriginalStart":"1315217667","End":5000,"OriginalEnd":"1352930125","Description":"{\"version\":1,\"operation_id\":\"op-0026\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"expected\":0,\"key\":\"cell-1\",\"method\":\"cell_cas\",\"value\":\"contender-7\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-1\",\"revision\":1,\"value\":\"contender-7\"},\"swapped\":true}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":4900,"OriginalStart":"1315252958","End":5100,"OriginalEnd":"1415008958","Description":"{\"version\":1,\"operation_id\":\"op-0025\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"expected\":0,\"key\":\"cell-1\",\"method\":\"cell_cas\",\"value\":\"contender-6\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"cell\":{\"key\":\"cell-1\",\"revision\":1,\"value\":\"contender-7\"},\"swapped\":false}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":5200,"OriginalStart":"1415038458","End":5500,"OriginalEnd":"1522938292","Description":"{\"version\":1,\"operation_id\":\"op-0028\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":2,\"messages\":[{\"body\":\"seed-1232669542235193208\",\"from\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"message\":\"f1e21418-3694-4ce3-9c14-51608d3c4080\",\"sequence\":1},{\"body\":\"seed-244759324573889867\",\"from\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"message\":\"2d28a874-12f0-4699-abe8-bd41dfd98a47\",\"sequence\":2}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":5300,"OriginalStart":"1415050875","End":5400,"OriginalEnd":"1473715375","Description":"{\"version\":1,\"operation_id\":\"op-0027\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":4,\"messages\":[{\"body\":\"seed-912497271556751494\",\"from\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"message\":\"376a67b7-3d06-4f37-9f89-4a01f3a91f20\",\"sequence\":1},{\"body\":\"seed-4675241498960219429\",\"from\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"message\":\"84d61139-2fd3-4bf6-bb7b-13389298eb11\",\"sequence\":2},{\"body\":\"seed-4455824619965983946\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"537668dd-8413-4b24-a949-b8d48a7ea8ee\",\"sequence\":3},{\"body\":\"seed-1133972579671004615\",\"from\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"message\":\"effcceda-549c-4a41-867a-6ea7cd2dad53\",\"sequence\":4}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":5600,"OriginalStart":"1522957708","End":5700,"OriginalEnd":"1591378375","Description":"{\"version\":1,\"operation_id\":\"op-0029\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":2,\"messages\":[{\"body\":\"seed-7278084610592497194\",\"from\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"message\":\"42e8568b-10fb-4ec2-9de1-9e1298f06236\",\"sequence\":1},{\"body\":\"seed-1348719718434430394\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"fea07b55-04a9-4830-917c-c1c5dbbb021e\",\"sequence\":2}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":5800,"OriginalStart":"1591410125","End":5900,"OriginalEnd":"1700625250","Description":"{\"version\":1,\"operation_id\":\"op-0030\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"ack\",\"through\":\"376a67b7-3d06-4f37-9f89-4a01f3a91f20\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":1}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":6000,"OriginalStart":"1700629667","End":6100,"OriginalEnd":"1756001125","Description":"{\"version\":1,\"operation_id\":\"op-0031\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"limit\":2,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":1,\"batch_end\":4,\"messages\":[{\"body\":\"seed-4675241498960219429\",\"from\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"message\":\"84d61139-2fd3-4bf6-bb7b-13389298eb11\",\"sequence\":2},{\"body\":\"seed-4455824619965983946\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"537668dd-8413-4b24-a949-b8d48a7ea8ee\",\"sequence\":3}]}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":6200,"OriginalStart":"1756045500","End":6500,"OriginalEnd":"1768189417","Description":"{\"version\":1,\"operation_id\":\"op-0011\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"seed-912497271556751494\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"376a67b7-3d06-4f37-9f89-4a01f3a91f20\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":6300,"OriginalStart":"1756052792","End":6400,"OriginalEnd":"1761931708","Description":"{\"version\":1,\"operation_id\":\"op-0011\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"seed-912497271556751494\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"376a67b7-3d06-4f37-9f89-4a01f3a91f20\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":6600,"OriginalStart":"1768204958","End":6800,"OriginalEnd":"1817445750","Description":"{\"version\":1,\"operation_id\":\"op-0035\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"method\":\"task_finish\",\"result\":{\"status\":\"success\",\"value\":\"b\"},\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"description\":\"task-0\",\"owner\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"result\":{\"status\":\"success\",\"value\":\"b\"},\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":6700,"OriginalStart":"1768206667","End":6900,"OriginalEnd":"1833998625","Description":"{\"version\":1,\"operation_id\":\"op-0011\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"body\":\"changed arguments\",\"method\":\"send\",\"to\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"operation_id reused with different arguments\"},\"exit\":1}","Metadata":""},{"ClientId":1,"Start":7000,"OriginalStart":"1834021833","End":7300,"OriginalEnd":"1899679417","Description":"{\"version\":1,\"operation_id\":\"op-0032\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"method\":\"ack\",\"through\":\"84d61139-2fd3-4bf6-bb7b-13389298eb11\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"acknowledgement does not belong to this mailbox: Query returned no rows\"},\"exit\":1}","Metadata":""},{"ClientId":0,"Start":7100,"OriginalStart":"1834122958","End":7200,"OriginalEnd":"1875555875","Description":"{\"version\":1,\"operation_id\":\"op-0033\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"task_finish\",\"result\":{\"status\":\"success\",\"value\":\"wrong owner\"},\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"only task owner can finish\"},\"exit\":0}","Metadata":""},{"ClientId":1,"Start":7400,"OriginalStart":"1899698250","End":7700,"OriginalEnd":"1966148417","Description":"{\"version\":1,\"operation_id\":\"op-0037\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"task_finish\",\"result\":{\"status\":\"success\",\"value\":\"b\"},\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"terminal task result is immutable\"},\"exit\":1}","Metadata":""},{"ClientId":0,"Start":7500,"OriginalStart":"1899700708","End":7600,"OriginalEnd":"1948729000","Description":"{\"version\":1,\"operation_id\":\"op-0036\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"task_finish\",\"result\":{\"status\":\"success\",\"value\":\"a\"},\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"description\":\"task-1\",\"owner\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"result\":{\"status\":\"success\",\"value\":\"a\"},\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":7800,"OriginalStart":"1966178542","End":7900,"OriginalEnd":"2007020375","Description":"{\"version\":1,\"operation_id\":\"op-0034\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"method\":\"task_finish\",\"result\":{\"status\":\"success\",\"value\":\"a\"},\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"terminal task result is immutable\"},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":8000,"OriginalStart":"2007033375","End":8100,"OriginalEnd":"2081445708","Description":"{\"version\":1,\"operation_id\":\"op-0038\",\"command\":{\"instance\":\"instance-0\",\"method\":\"launch_start\",\"provider\":\"codex\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":8200,"OriginalStart":"2081452417","End":8300,"OriginalEnd":"2156982958","Description":"{\"version\":1,\"operation_id\":\"op-0039\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"agent\":null,\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-0\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"parent\":null}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":8400,"OriginalStart":"2156987375","End":8500,"OriginalEnd":"2173776792","Description":"{\"version\":1,\"operation_id\":\"op-0040\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"method\":\"members\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"unknown member or stale launch\"},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":8600,"OriginalStart":"2173779500","End":8700,"OriginalEnd":"2197460417","Description":"{\"version\":1,\"operation_id\":\"op-0041\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"cfa90c7f-4619-4b18-9e8f-829fd02e65a8\",\"command\":{\"method\":\"members\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":false,\"error\":\"unknown member or stale launch\"},\"exit\":1}","Metadata":""},{"ClientId":0,"Start":8800,"OriginalStart":"2200297208","End":8900,"OriginalEnd":"2293260250","Description":"{\"version\":1,\"operation_id\":\"op-0042\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"agent\":\"child\",\"method\":\"bind\",\"parent_agent\":null,\"session\":\"session-0\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"parent\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":9000,"OriginalStart":"2293265208","End":9100,"OriginalEnd":"2302937500","Description":"{\"version\":1,\"operation_id\":\"op-0043\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"body\":\"crash-window\",\"method\":\"send\",\"to\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\"}} → {\"kind\":\"known_abort\",\"response\":{\"version\":0,\"ok\":false},\"recovery_response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"205aead1-9346-4028-9202-9306be4ceb25\",\"sequence\":1}},\"exit\":86,\"stderr\":\"; exit status 86\"}","Metadata":""},{"ClientId":0,"Start":9200,"OriginalStart":"2302950083","End":9300,"OriginalEnd":"2347905583","Description":"{\"version\":1,\"operation_id\":\"op-0044\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":9400,"OriginalStart":"2347905792","End":9500,"OriginalEnd":"2385010292","Description":"{\"version\":1,\"operation_id\":\"op-0043\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"body\":\"crash-window\",\"method\":\"send\",\"to\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"message\":\"205aead1-9346-4028-9202-9306be4ceb25\",\"sequence\":1}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":9600,"OriginalStart":"2385015750","End":9700,"OriginalEnd":"2433399083","Description":"{\"version\":1,\"operation_id\":\"op-0045\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":2,\"messages\":[{\"body\":\"seed-1232669542235193208\",\"from\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"message\":\"f1e21418-3694-4ce3-9c14-51608d3c4080\",\"sequence\":1},{\"body\":\"seed-244759324573889867\",\"from\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"message\":\"2d28a874-12f0-4699-abe8-bd41dfd98a47\",\"sequence\":2}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":9800,"OriginalStart":"2433414208","End":9900,"OriginalEnd":"2472729208","Description":"{\"version\":1,\"operation_id\":\"op-0046\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"method\":\"ack\",\"through\":\"2d28a874-12f0-4699-abe8-bd41dfd98a47\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":2}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":10000,"OriginalStart":"2472732542","End":10100,"OriginalEnd":"2558251792","Description":"{\"version\":1,\"operation_id\":\"op-0047\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":2,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":10200,"OriginalStart":"2558257250","End":10300,"OriginalEnd":"2623003708","Description":"{\"version\":1,\"operation_id\":\"op-0048\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":1,\"batch_end\":4,\"messages\":[{\"body\":\"seed-4675241498960219429\",\"from\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"message\":\"84d61139-2fd3-4bf6-bb7b-13389298eb11\",\"sequence\":2},{\"body\":\"seed-4455824619965983946\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"537668dd-8413-4b24-a949-b8d48a7ea8ee\",\"sequence\":3},{\"body\":\"seed-1133972579671004615\",\"from\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"message\":\"effcceda-549c-4a41-867a-6ea7cd2dad53\",\"sequence\":4}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":10400,"OriginalStart":"2623034500","End":10500,"OriginalEnd":"2685321083","Description":"{\"version\":1,\"operation_id\":\"op-0049\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"ack\",\"through\":\"effcceda-549c-4a41-867a-6ea7cd2dad53\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":4}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":10600,"OriginalStart":"2685329625","End":10700,"OriginalEnd":"2742067167","Description":"{\"version\":1,\"operation_id\":\"op-0050\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":4,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":10800,"OriginalStart":"2742092292","End":10900,"OriginalEnd":"2807576375","Description":"{\"version\":1,\"operation_id\":\"op-0051\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":1,\"messages\":[{\"body\":\"crash-window\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"205aead1-9346-4028-9202-9306be4ceb25\",\"sequence\":1}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":11000,"OriginalStart":"2807604250","End":11100,"OriginalEnd":"2882799667","Description":"{\"version\":1,\"operation_id\":\"op-0052\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"method\":\"ack\",\"through\":\"205aead1-9346-4028-9202-9306be4ceb25\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":1}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":11200,"OriginalStart":"2882818167","End":11300,"OriginalEnd":"2951971917","Description":"{\"version\":1,\"operation_id\":\"op-0053\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":1,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":11400,"OriginalStart":"2951978167","End":11500,"OriginalEnd":"3020627833","Description":"{\"version\":1,\"operation_id\":\"op-0054\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":2,\"messages\":[{\"body\":\"seed-7278084610592497194\",\"from\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"message\":\"42e8568b-10fb-4ec2-9de1-9e1298f06236\",\"sequence\":1},{\"body\":\"seed-1348719718434430394\",\"from\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"message\":\"fea07b55-04a9-4830-917c-c1c5dbbb021e\",\"sequence\":2}]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":11600,"OriginalStart":"3020677583","End":11700,"OriginalEnd":"3095020875","Description":"{\"version\":1,\"operation_id\":\"op-0055\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"method\":\"ack\",\"through\":\"fea07b55-04a9-4830-917c-c1c5dbbb021e\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":2}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":11800,"OriginalStart":"3095029708","End":11900,"OriginalEnd":"3181831458","Description":"{\"version\":1,\"operation_id\":\"op-0056\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":2,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":12000,"OriginalStart":"3181850833","End":12100,"OriginalEnd":"3332858500","Description":"{\"version\":1,\"operation_id\":\"op-0057\",\"member\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"limit\":4,\"method\":\"inbox\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"acked\":0,\"batch_end\":0,\"messages\":[]}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":12200,"OriginalStart":"3332874917","End":12300,"OriginalEnd":"3344091583","Description":"{\"version\":1,\"operation_id\":\"op-0058\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"key\":\"cell-0\",\"method\":\"cell_read\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"key\":\"cell-0\",\"revision\":1,\"value\":\"contender-1\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":12400,"OriginalStart":"3344097125","End":12500,"OriginalEnd":"3368145250","Description":"{\"version\":1,\"operation_id\":\"op-0059\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"key\":\"cell-1\",\"method\":\"cell_read\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"key\":\"cell-1\",\"revision\":1,\"value\":\"contender-7\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":12600,"OriginalStart":"3368154417","End":12700,"OriginalEnd":"3390235042","Description":"{\"version\":1,\"operation_id\":\"op-0060\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"key\":\"cell-2\",\"method\":\"cell_read\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"key\":\"cell-2\",\"revision\":0,\"value\":null}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":12800,"OriginalStart":"3390239958","End":12900,"OriginalEnd":"3406198083","Description":"{\"version\":1,\"operation_id\":\"op-0061\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"method\":\"task_read\",\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"description\":\"task-0\",\"owner\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"result\":{\"status\":\"success\",\"value\":\"b\"},\"task\":\"5a54faf8-c2ee-4e96-863b-cd5b9372e5b5\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":13000,"OriginalStart":"3406205208","End":13100,"OriginalEnd":"3410600000","Description":"{\"version\":1,\"operation_id\":\"op-0062\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"command\":{\"method\":\"task_read\",\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"description\":\"task-1\",\"owner\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"result\":{\"status\":\"success\",\"value\":\"a\"},\"task\":\"0ba37f38-c162-4542-bafa-54d8ec7251b3\"}},\"exit\":0}","Metadata":""},{"ClientId":0,"Start":13200,"OriginalStart":"3410603667","End":13300,"OriginalEnd":"3414542667","Description":"{\"version\":1,\"operation_id\":\"op-0063\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"command\":{\"method\":\"members\"}} → {\"kind\":\"response\",\"response\":{\"version\":1,\"ok\":true,\"result\":{\"members\":[{\"agent\":\"\",\"instance\":\"instance-0\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"member\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"parent\":null,\"provider\":\"codex\",\"session\":\"session-0\"},{\"agent\":\"\",\"instance\":\"instance-1\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"member\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"parent\":null,\"provider\":\"claude\",\"session\":\"session-1\"},{\"agent\":\"\",\"instance\":\"instance-2\",\"launch\":\"fefc3f95-19c3-4d17-b2b1-fe9571876393\",\"member\":\"b3c75290-2123-4374-b49e-fde6f3b091b9\",\"parent\":null,\"provider\":\"codex\",\"session\":\"session-2\"},{\"agent\":\"child\",\"instance\":\"instance-0\",\"launch\":\"5534675d-dd28-421b-8ea9-4d47f6c2a6a6\",\"member\":\"80702fdb-2129-4202-b249-7d22d25c2842\",\"parent\":\"16916c34-149c-4ddd-b63d-dc6037c095d9\",\"provider\":\"codex\",\"session\":\"session-0\"},{\"agent\":\"child\",\"instance\":\"instance-1\",\"launch\":\"05d74968-5509-4b5a-aea3-da7a9ba99452\",\"member\":\"ebf14b4c-28e1-4580-8787-a55a7ba3e068\",\"parent\":\"79f75bd9-eee0-4e83-8dd0-70e6919b60cc\",\"provider\":\"claude\",\"session\":\"session-1\"}]}},\"exit\":0}","Metadata":""}],"PartialLinearizations":[],"Largest":{}}],"Annotations":[]}
+
+      render(data)
+    </script>
+  </body>
+</html>

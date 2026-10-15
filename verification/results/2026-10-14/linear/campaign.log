@@ -1,0 +1,176 @@
+checked 25/1000 histories; outcomes=map[Ok:25]; elapsed=16s
+checked 50/1000 histories; outcomes=map[Ok:50]; elapsed=33s
+checked 75/1000 histories; outcomes=map[Ok:75]; elapsed=50s
+checked 100/1000 histories; outcomes=map[Ok:100]; elapsed=1m10s
+checked 125/1000 histories; outcomes=map[Ok:125]; elapsed=1m28s
+checked 150/1000 histories; outcomes=map[Ok:150]; elapsed=1m46s
+checked 175/1000 histories; outcomes=map[Ok:175]; elapsed=2m3s
+checked 200/1000 histories; outcomes=map[Ok:200]; elapsed=2m20s
+checked 225/1000 histories; outcomes=map[Ok:225]; elapsed=2m39s
+checked 250/1000 histories; outcomes=map[Ok:250]; elapsed=2m57s
+checked 275/1000 histories; outcomes=map[Ok:275]; elapsed=3m20s
+checked 300/1000 histories; outcomes=map[Ok:300]; elapsed=3m39s
+checked 325/1000 histories; outcomes=map[Ok:325]; elapsed=3m57s
+checked 350/1000 histories; outcomes=map[Ok:350]; elapsed=4m18s
+checked 375/1000 histories; outcomes=map[Ok:375]; elapsed=4m35s
+checked 400/1000 histories; outcomes=map[Ok:400]; elapsed=4m53s
+checked 425/1000 histories; outcomes=map[Ok:425]; elapsed=5m14s
+checked 450/1000 histories; outcomes=map[Ok:450]; elapsed=5m32s
+checked 475/1000 histories; outcomes=map[Ok:475]; elapsed=5m52s
+checked 500/1000 histories; outcomes=map[Ok:500]; elapsed=6m10s
+checked 525/1000 histories; outcomes=map[Ok:525]; elapsed=6m28s
+checked 550/1000 histories; outcomes=map[Ok:550]; elapsed=6m49s
+checked 575/1000 histories; outcomes=map[Ok:575]; elapsed=7m8s
+checked 600/1000 histories; outcomes=map[Ok:600]; elapsed=7m27s
+checked 625/1000 histories; outcomes=map[Ok:625]; elapsed=7m46s
+checked 650/1000 histories; outcomes=map[Ok:650]; elapsed=8m5s
+checked 675/1000 histories; outcomes=map[Ok:675]; elapsed=8m23s
+checked 700/1000 histories; outcomes=map[Ok:700]; elapsed=8m39s
+checked 725/1000 histories; outcomes=map[Ok:725]; elapsed=9m0s
+checked 750/1000 histories; outcomes=map[Ok:750]; elapsed=9m19s
+checked 775/1000 histories; outcomes=map[Ok:775]; elapsed=9m42s
+checked 800/1000 histories; outcomes=map[Ok:800]; elapsed=10m0s
+checked 825/1000 histories; outcomes=map[Ok:825]; elapsed=10m20s
+checked 850/1000 histories; outcomes=map[Ok:850]; elapsed=10m41s
+checked 875/1000 histories; outcomes=map[Ok:875]; elapsed=11m1s
+checked 900/1000 histories; outcomes=map[Ok:900]; elapsed=11m20s
+checked 925/1000 histories; outcomes=map[Ok:925]; elapsed=11m42s
+checked 950/1000 histories; outcomes=map[Ok:950]; elapsed=12m3s
+checked 975/1000 histories; outcomes=map[Ok:975]; elapsed=12m21s
+checked 1000/1000 histories; outcomes=map[Ok:1000]; elapsed=12m38s
+{
+  "started_utc": "2026-10-15T03:08:33.419231Z",
+  "finished_utc": "2026-10-15T03:21:11.898094Z",
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "binary_sha256": "09717a512a487987c55cdb68af80d4933ada3602861f76e0f9054687b3beae62",
+  "binary_version": {
+    "protocol": 1,
+    "sqlite_source_id": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "sqlite_version": "3.53.2",
+    "version": "0.1.0"
+  },
+  "go_version": "go1.26.8",
+  "goos": "darwin",
+  "goarch": "arm64",
+  "checker": "github.com/anishathalye/porcupine v1.3.0",
+  "verifier_source_sha256": {
+    "campaign.go": "2ae577df40cbaf7754494fb6ca4844c24f67a0123784adca95ed4adce5f6e43a",
+    "go.mod": "60b4e76ce6ffafb70dc13a04ae8f84333309a8543feb8b3d0e077bc90f425a6d",
+    "go.sum": "5cead10045d5ba52ace8649af6cf4a6bc71fc754bc7c7fd13973f423e8cf1c3d",
+    "main.go": "53c24bc4a27d71c575343c53599acecddd4c89c4d440e2bdc3124f52ebe6735e",
+    "model.go": "ea5e539e609b20d84030548f0173cdaf5074ce808e4f31c287f63259511cfd73",
+    "model_test.go": "d5a247c5aa5b17bfe5770f44991aed0b2d9300974791318777f6436719708742",
+    "transport.go": "f8d2dc1b8c3f21c273363729946bed32d54c5a16e06c84b037578785f53d7442"
+  },
+  "histories_sha256": "56ae5f64e0eb1b51930733f790e4f4bd4c3a9fb2dd519fcc16cce1c03f1d8c82",
+  "seed": 20261014,
+  "start_index": 0,
+  "requested_histories": 1000,
+  "requested_workload_calls_per_history": 50,
+  "history_jobs": 4,
+  "completed_histories": 1000,
+  "outcomes": {
+    "Ok": 1000
+  },
+  "concurrency_strata": {
+    "2": 334,
+    "4": 333,
+    "8": 333
+  },
+  "phase_calls": {
+    "audit": 20912,
+    "audit_before_replay": 1000,
+    "fault": 1000,
+    "lifecycle": 5000,
+    "recovery": 1000,
+    "setup": 8000,
+    "workload": 50000
+  },
+  "route_calls": {
+    "cli": 47825,
+    "mcp": 39087
+  },
+  "method_calls": {
+    "ack": 8779,
+    "bind": 7000,
+    "cell_cas": 11587,
+    "cell_read": 4781,
+    "inbox": 16756,
+    "launch_start": 4000,
+    "members": 4833,
+    "send": 16522,
+    "task_create": 2000,
+    "task_finish": 6852,
+    "task_read": 3802
+  },
+  "method_route_calls": {
+    "cli:ack": 4350,
+    "cli:bind": 7000,
+    "cli:cell_cas": 5743,
+    "cli:cell_read": 2399,
+    "cli:inbox": 7852,
+    "cli:launch_start": 4000,
+    "cli:members": 1936,
+    "cli:send": 8241,
+    "cli:task_create": 1000,
+    "cli:task_finish": 3445,
+    "cli:task_read": 1859,
+    "mcp:ack": 4429,
+    "mcp:cell_cas": 5844,
+    "mcp:cell_read": 2382,
+    "mcp:inbox": 8904,
+    "mcp:members": 2897,
+    "mcp:send": 8281,
+    "mcp:task_create": 1000,
+    "mcp:task_finish": 3407,
+    "mcp:task_read": 1943
+  },
+  "response_kinds": {
+    "known_abort": 334,
+    "known_commit": 333,
+    "response": 85912,
+    "unknown": 333
+  },
+  "fault_by_concurrency": {
+    "after_commit/clients-2": 111,
+    "after_commit/clients-4": 111,
+    "after_commit/clients-8": 111,
+    "before_commit/clients-2": 112,
+    "before_commit/clients-4": 111,
+    "before_commit/clients-8": 111,
+    "sigkill/clients-2": 111,
+    "sigkill/clients-4": 111,
+    "sigkill/clients-8": 111
+  },
+  "fault_outcomes": {
+    "after_commit:known_commit": 333,
+    "before_commit:known_abort": 334,
+    "sigkill:unknown": 333
+  },
+  "public_error_classes": {
+    "does not belong": 1000,
+    "only task owner": 1000,
+    "operation_id reused": 1000,
+    "stale launch": 2000,
+    "terminal task result": 2936
+  },
+  "workload_overlapping_pairs": 76612,
+  "workload_submitted_overlapping_pairs": 76059,
+  "histories_with_workload_overlap": 1000,
+  "maximum_workload_inflight": 8,
+  "checker_ms": {
+    "max": 186.738,
+    "min": 13.233,
+    "p50": 19.271,
+    "p95": 54.846
+  },
+  "wall_seconds": 758.474982416,
+  "limitations": [
+    "Finite generated histories, not exhaustive schedule exploration or a proof.",
+    "Intervals measure client invocation/return and request-submitted/return; they do not instrument SQLite lock overlap.",
+    "Fault outcomes: known_abort is before_commit exit86; known_commit is after_commit exit86; unknown is SIGKILL without a protocol reply, bounded by observed process death.",
+    "A public replay supplies possible generated IDs for crash transitions, not a commit oracle; prior public reads constrain effect-or-no-effect alternatives.",
+    "No journal, SQL tables, or implementation transaction order are read by the checker.",
+    "No native model calls, credentials, power-loss simulation, network filesystem, or liveness proof."
+  ]
+}

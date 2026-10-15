@@ -1,0 +1,427 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 30 and seed -5644875588112194349 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 88603] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/out/RecordedTrace.tla
+Parsing file /Users/roshanhegde/icarus/verification/Trace.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2118231820340235851/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2118231820340235851/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2118231820340235851/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2118231820340235851/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Trace
+Semantic processing of module RecordedTrace
+Linting of module Trace
+Linting of module RecordedTrace
+line 3, col 154 to line 3, col 161 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 189 to line 3, col 196 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 274 to line 3, col 278 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 287 to line 3, col 291 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 402 to line 3, col 409 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 437 to line 3, col 444 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 523 to line 3, col 527 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 536 to line 3, col 540 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 683 to line 3, col 690 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 718 to line 3, col 725 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 803 to line 3, col 807 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 816 to line 3, col 820 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 931 to line 3, col 938 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 966 to line 3, col 973 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 1053 to line 3, col 1057 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 1066 to line 3, col 1070 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 1213 to line 3, col 1220 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 1248 to line 3, col 1255 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 1333 to line 3, col 1337 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 1346 to line 3, col 1350 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 1458 to line 3, col 1465 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 1571 to line 3, col 1578 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 1656 to line 3, col 1660 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 1669 to line 3, col 1673 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 1779 to line 3, col 1786 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 1814 to line 3, col 1821 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 1899 to line 3, col 1903 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 1912 to line 3, col 1916 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 2024 to line 3, col 2031 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 2097 to line 3, col 2104 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 2182 to line 3, col 2186 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 2195 to line 3, col 2199 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 2313 to line 3, col 2320 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 2348 to line 3, col 2355 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 2433 to line 3, col 2437 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 2446 to line 3, col 2450 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+line 3, col 2564 to line 3, col 2571 of module RecordedTrace
+
+The field name "messages" in the record constructor is identical to the existing definition or declaration
+named messages, located at line 4, col 36 to line 4, col 43 of module Trace.
+The field in the record will not take the value of the messages definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [messages |-> ...] = {"messages"} holds true.
+
+
+
+line 3, col 2599 to line 3, col 2606 of module RecordedTrace
+
+The field name "revision" in the record constructor is identical to the existing definition or declaration
+named revision, located at line 4, col 19 to line 4, col 26 of module Trace.
+The field in the record will not take the value of the revision definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [revision |-> ...] = {"revision"} holds true.
+
+
+
+line 3, col 2770 to line 3, col 2774 of module RecordedTrace
+
+The field name "acked" in the record constructor is identical to the existing definition or declaration
+named acked, located at line 4, col 46 to line 4, col 50 of module Trace.
+The field in the record will not take the value of the acked definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [acked |-> ...] = {"acked"} holds true.
+
+
+
+line 3, col 2783 to line 3, col 2787 of module RecordedTrace
+
+The field name "batch" in the record constructor is identical to the existing definition or declaration
+named batch, located at line 4, col 53 to line 4, col 57 of module Trace.
+The field in the record will not take the value of the batch definition or declaration.
+In TLA+, field names in records are strings, regardless of any similarly named declarations or definitions.
+Therefore, DOMAIN [batch |-> ...] = {"batch"} holds true.
+
+
+
+Starting... (2026-10-14 22:27:36)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 22:27:36.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 0.0
+11 states generated, 11 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 1 and the 95th percentile is 1).
+Finished in 00s at (2026-10-14 22:27:36)

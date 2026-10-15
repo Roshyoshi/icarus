@@ -1,0 +1,20 @@
+
+running 1 test
+test every_mutation_recovers_at_each_commit_crash_boundary ... FAILED
+
+failures:
+
+failures:
+    every_mutation_recovers_at_each_commit_crash_boundary
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.95s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running tests/verification.rs (target/debug/deps/verification-1d63bf553407e295)
+
+thread 'every_mutation_recovers_at_each_commit_crash_boundary' (7590139) panicked at sync/tests/verification.rs:203:13:
+assertion `left == right` failed: launch_start/before_commit left a duplicate or missing physical effect
+  left: {"cells": 0, "launches": 3, "mailboxes": 2, "members": 2, "messages": 0, "tasks": 0}
+ right: {"cells": 0, "launches": 2, "mailboxes": 2, "members": 2, "messages": 0, "tasks": 0}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `--test verification`

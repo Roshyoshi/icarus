@@ -1,0 +1,248 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 24,
+  "cases": [
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 383.947875,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "launch_start"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 559.1537079999999,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "launch_start"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 618.445042,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "launch_start"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 501.52595899999994,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "bind"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 552.942333,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "bind"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 466.100542,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "bind"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 453.385458,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "send"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 414.81975,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "send"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 395.30787499999997,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "send"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 489.0355,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "inbox"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 484.561625,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "inbox"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 648.5991250000001,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "inbox"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 992.44325,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "ack"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 1014.817708,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "ack"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 833.8619170000001,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "ack"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 460.164917,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_create"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 449.785583,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_create"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 459.75424999999996,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_create"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 533.696916,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_finish"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 565.9494579999999,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_finish"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 540.733833,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "task_finish"
+    },
+    {
+      "committed_before_reply": false,
+      "crash": "before_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 510.135291,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "cell_cas"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_commit",
+      "durable_effects": 1,
+      "elapsed_ms": 488.57158400000003,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "cell_cas"
+    },
+    {
+      "committed_before_reply": true,
+      "crash": "after_notify",
+      "durable_effects": 1,
+      "elapsed_ms": 511.65875000000005,
+      "foreign_key_violations": 0,
+      "identical_retries": 2,
+      "integrity_check": "ok",
+      "mutation": "cell_cas"
+    }
+  ],
+  "elapsed_ms": 13387.8185,
+  "test": "mutation_crash_matrix"
+}

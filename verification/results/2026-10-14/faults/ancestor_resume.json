@@ -1,0 +1,33 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 5,
+  "cases": [
+    {
+      "depth": 0,
+      "fresh_call": "stale_launch",
+      "mutation_replay": "stale_launch"
+    },
+    {
+      "depth": 1,
+      "fresh_call": "stale_launch",
+      "mutation_replay": "stale_launch"
+    },
+    {
+      "depth": 2,
+      "fresh_call": "stale_launch",
+      "mutation_replay": "stale_launch"
+    },
+    {
+      "depth": 3,
+      "fresh_call": "stale_launch",
+      "mutation_replay": "stale_launch"
+    },
+    {
+      "depth": 4,
+      "fresh_call": "stale_launch",
+      "mutation_replay": "stale_launch"
+    }
+  ],
+  "elapsed_ms": 3489.184083,
+  "test": "ancestor_resume"
+}

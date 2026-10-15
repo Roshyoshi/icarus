@@ -1,0 +1,30 @@
+cargo fmt --check
+cargo clippy --locked --all-targets -- -D warnings
+    Checking icarus-sync v0.1.0 (/Users/roshanhegde/icarus/sync)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.83s
+/nix/store/isqxa82c7f65sbhi51npr0547yz87bh5-go-1.26.8/bin/go vet ./...
+   Compiling icarus-sync v0.1.0 (/Users/roshanhegde/icarus/sync)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.46s
+     Running tests/mcp.rs (target/debug/deps/mcp-95a0c1168b3c6e60)
+
+running 1 test
+test mcp_tools_require_identity_and_wait_cancellation_is_local ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
+
+     Running tests/protocol.rs (target/debug/deps/protocol-3960600fa8bcdd60)
+
+running 8 tests
+test protocol_rejects_invalid_ids_versions_and_unfetched_acks ... ok
+test competing_cas_and_completion_have_one_winner ... ok
+test concurrent_hooks_fetch_the_same_prefix_and_continue_only_once ... ok
+test identity_scopes_siblings_providers_resumes_and_stale_descendants ... ok
+test dropped_notifications_timeout_and_restart_do_not_lose_work ... ok
+test crash_before_and_after_commit_preserves_one_effect ... ok
+test mailbox_prefix_ack_and_replay_survive_restart ... ok
+test native_subagents_exchange_messages_and_hook_crashes_never_ack ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.20s
+
+?   	icarus.local/icarus/cmd/icarus	[no test files]
+ok  	icarus.local/icarus/internal/launcher	(cached)

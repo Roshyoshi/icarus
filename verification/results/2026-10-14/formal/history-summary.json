@@ -1,0 +1,27 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "binary_sha256": "09717a512a487987c55cdb68af80d4933ada3602861f76e0f9054687b3beae62",
+  "attempts": 17,
+  "durable_operations": 12,
+  "ambiguous_commits": 1,
+  "errors": 2,
+  "successful_replays": 3,
+  "linearizable": true,
+  "trace_projection": "selected legal call order, including failed calls and replay attempts",
+  "negative_controls": [
+    "lost ambiguous commit",
+    "double CAS success"
+  ],
+  "trace_negative_controls": [
+    "wrong revision",
+    "changed replay result",
+    "committed conflicting finish"
+  ],
+  "omissions": [
+    "one mailbox/cell/task",
+    "no read-only calls",
+    "no unknown pre-commit outcomes",
+    "no ownership/identity/wait/hook events",
+    "no storage page or power-loss model"
+  ]
+}

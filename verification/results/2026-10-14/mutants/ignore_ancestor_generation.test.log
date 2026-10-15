@@ -1,0 +1,18 @@
+
+running 1 test
+test ancestor_resume_rejects_descendant_calls_and_replays_without_rebinding ... FAILED
+
+failures:
+
+failures:
+    ancestor_resume_rejects_descendant_calls_and_replays_without_rebinding
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 1.31s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/verification.rs (target/debug/deps/verification-1d63bf553407e295)
+
+thread 'ancestor_resume_rejects_descendant_calls_and_replays_without_rebinding' (7597905) panicked at sync/tests/verification.rs:578:5:
+assertion failed: !stale_output.status.success()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `--test verification`

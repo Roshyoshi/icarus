@@ -1,0 +1,311 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 18 and seed 3108616941839917035 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 52981] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/Mailbox.tla
+Parsing file /Users/roshanhegde/icarus/verification/Protocol.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15278103699552463060/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15278103699552463060/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15278103699552463060/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15278103699552463060/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Protocol
+Semantic processing of module Mailbox
+Linting of module Protocol
+Linting of module Mailbox
+Starting... (2026-10-14 23:08:29)
+Implied-temporal checking--satisfiability problem has 3 branches.
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:29.
+Checking 3 branches of temporal properties for the current state space with 71649 total distinct states at (2026-10-14 23:08:32)
+Error: Temporal property EventuallyObserve was violated.
+
+Error: The following behavior constitutes a counter-example:
+
+State 1: <Initial predicate>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = FALSE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 2: <Crash line 64, col 10 to line 67, col 75 of module Mailbox>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = FALSE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 3: <Restart line 68, col 12 to line 70, col 58 of module Mailbox>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 4: <Arm line 25, col 8 to line 27, col 54 of module Mailbox>
+/\ phase = "read"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 5: <Poll line 29, col 3 to line 34, col 71 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 6: <CommitSend line 14, col 3 to line 18, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 7: <CommitSend line 14, col 3 to line 18, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 8: <Fetch("hook-b",2) line 43, col 3 to line 52, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 2,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<1, 2>>)
+
+State 9: <Inject("hook-b") line 54, col 3 to line 57, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 2,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<1, 2>>)
+
+State 10: <Ack(2) line 59, col 3 to line 63, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 2,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 2
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<1, 2>>)
+
+State 11: <Fetch("hook-b",1) line 43, col 3 to line 52, col 49 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 2,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 2
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 12: <Notify line 19, col 11 to line 21, col 57 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 2,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = TRUE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 2
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 13: <Drop line 22, col 9 to line 24, col 55 of module Mailbox>
+/\ phase = "sleep"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 2,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 2
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 14: <Tick line 35, col 9 to line 37, col 55 of module Mailbox>
+/\ phase = "read"
+/\ durable = [ mail |-> <<1, 2>>,
+  batch |-> 0,
+  acked |-> 2,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {1, 2}
+/\ observed = 0
+/\ snapshotValid = TRUE
+/\ crashed = TRUE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 2
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+Back to state 11: <Poll line 29, col 3 to line 34, col 71 of module Mailbox>
+
+Finished checking temporal properties in 00s at 2026-10-14 23:08:32
+216199 states generated, 23883 distinct states found, 6067 states left on queue.
+The depth of the complete state graph search is 14.
+Finished in 03s at (2026-10-14 23:08:32)

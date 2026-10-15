@@ -1,0 +1,22 @@
+?   	icarus.local/icarus/cmd/icarus	[no test files]
+=== RUN   TestInstancesLoginIndependenceAndNativeExit
+=== RUN   TestInstancesLoginIndependenceAndNativeExit/codex
+=== RUN   TestInstancesLoginIndependenceAndNativeExit/claude
+--- PASS: TestInstancesLoginIndependenceAndNativeExit (1.66s)
+    --- PASS: TestInstancesLoginIndependenceAndNativeExit/codex (0.74s)
+    --- PASS: TestInstancesLoginIndependenceAndNativeExit/claude (0.93s)
+=== RUN   TestManagedAuthenticationFailsClosed
+--- PASS: TestManagedAuthenticationFailsClosed (0.69s)
+=== RUN   TestImportProfilesAndTemplateSnapshots
+--- PASS: TestImportProfilesAndTemplateSnapshots (0.87s)
+=== RUN   TestClaudeImportAndExplicitAssets
+--- PASS: TestClaudeImportAndExplicitAssets (0.32s)
+=== RUN   TestConcurrentCreateIsNoReplace
+--- PASS: TestConcurrentCreateIsNoReplace (0.11s)
+=== RUN   TestSourceOverridesAndTemplateCredentialsAreRejected
+--- PASS: TestSourceOverridesAndTemplateCredentialsAreRejected (0.09s)
+=== RUN   TestRealLoggedOutDiagnostics
+    native_test.go:14: opt-in native CLI diagnostics
+--- SKIP: TestRealLoggedOutDiagnostics (0.00s)
+PASS
+ok  	icarus.local/icarus/internal/launcher	4.200s

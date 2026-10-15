@@ -1,0 +1,19 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 1,
+  "cases": [
+    {
+      "batch_ends": [
+        4,
+        5
+      ],
+      "first_batch_repeat_suppressed": true,
+      "messages": 5,
+      "native_recursion_suppressed": true,
+      "same_text": true,
+      "second_batch_delivered": true
+    }
+  ],
+  "elapsed_ms": 948.900916,
+  "test": "stop_batch_progress"
+}

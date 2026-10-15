@@ -1,0 +1,278 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 18,
+  "cases": [
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "enabled",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 38.638625000000005
+    },
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 28.23575
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 30.77125
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 46.226709
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 20.865959
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "messages",
+      "writer_response_to_waiter_response_ms": 1031.989916
+    },
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "enabled",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 35.188167
+    },
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 20.200084
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 29.089833
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 23.399416
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 18.927291999999998
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "tasks",
+      "writer_response_to_waiter_response_ms": 1027.887292
+    },
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "enabled",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 29.307458
+    },
+    {
+      "bound_wake_targets_at_commit": 0,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "before_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 27.0615
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 24.206083
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_arm",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 24.946083
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": false,
+        "failed": 0,
+        "sent": 1,
+        "targets": 1
+      },
+      "notification_policy": "enabled",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 29.9545
+    },
+    {
+      "bound_wake_targets_at_commit": 1,
+      "notification": {
+        "dropped": true,
+        "failed": 0,
+        "sent": 0,
+        "targets": 0
+      },
+      "notification_policy": "all_dropped",
+      "pause": "after_empty_read",
+      "result": "ready",
+      "schedule": "waiter reaches marker; writer commits; waiter resumes",
+      "wait_for": "cells",
+      "writer_response_to_waiter_response_ms": 1031.225458
+    }
+  ],
+  "elapsed_ms": 9408.76675,
+  "test": "forced_wait_schedules"
+}

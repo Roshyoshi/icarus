@@ -1,0 +1,18 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 2,
+  "cases": [
+    {
+      "contract": "already_fetched_output_may_arrive_after_ack",
+      "paused": "before_injection",
+      "racing_action": "ack"
+    },
+    {
+      "contract": "stale_launch_rejected_before_output",
+      "paused": "before_injection",
+      "racing_action": "resume"
+    }
+  ],
+  "elapsed_ms": 897.957959,
+  "test": "hook_delivery_races"
+}

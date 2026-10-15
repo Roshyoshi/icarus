@@ -1,0 +1,85 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 14 and seed -7708372525531596453 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 52938] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/Mailbox.tla
+Parsing file /Users/roshanhegde/icarus/verification/Protocol.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-16769025231740349689/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-16769025231740349689/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-16769025231740349689/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-16769025231740349689/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Protocol
+Semantic processing of module Mailbox
+Linting of module Protocol
+Linting of module Mailbox
+Starting... (2026-10-14 23:08:29)
+Implied-temporal checking--satisfiability problem has 3 branches.
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:29.
+Error: Invariant Safety is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = FALSE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 2: <CommitSend line 14, col 3 to line 18, col 49 of module Mailbox>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<1>>,
+  batch |-> 0,
+  acked |-> 0,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = FALSE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<>> @@ "hook-b" :> <<>>)
+
+State 3: <Fetch("hook-a",1) line 43, col 3 to line 52, col 49 of module Mailbox>
+/\ phase = "disarmed"
+/\ durable = [ mail |-> <<1>>,
+  batch |-> 0,
+  acked |-> 1,
+  revision |-> 0,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ hint = FALSE
+/\ injected = {}
+/\ observed = 0
+/\ snapshotValid = FALSE
+/\ crashed = FALSE
+/\ snapshot = 0
+/\ live = TRUE
+/\ clientAck = 0
+/\ fetched = ("hook-a" :> <<1>> @@ "hook-b" :> <<>>)
+
+15 states generated, 9 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 3.
+Finished in 00s at (2026-10-14 23:08:29)

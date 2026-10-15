@@ -1,0 +1,38 @@
+=== RUN   TestAcceptsConcurrentCASAndReplay
+--- PASS: TestAcceptsConcurrentCASAndReplay (0.00s)
+=== RUN   TestRejectsSpecificProtocolLies
+=== RUN   TestRejectsSpecificProtocolLies/double_CAS_success
+=== RUN   TestRejectsSpecificProtocolLies/replay_duplicates_effect
+=== RUN   TestRejectsSpecificProtocolLies/changed_arguments_reuse_op
+=== RUN   TestRejectsSpecificProtocolLies/mailbox_reordered
+=== RUN   TestRejectsSpecificProtocolLies/ack_before_fetch
+=== RUN   TestRejectsSpecificProtocolLies/terminal_rewrite
+=== RUN   TestRejectsSpecificProtocolLies/stale_generation_accepted
+--- PASS: TestRejectsSpecificProtocolLies (0.01s)
+    --- PASS: TestRejectsSpecificProtocolLies/double_CAS_success (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/replay_duplicates_effect (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/changed_arguments_reuse_op (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/mailbox_reordered (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/ack_before_fetch (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/terminal_rewrite (0.00s)
+    --- PASS: TestRejectsSpecificProtocolLies/stale_generation_accepted (0.00s)
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/known_abort-absent
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/known_abort-present
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/known_commit-absent
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/known_commit-present
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/unknown-absent
+=== RUN   TestCrashSemanticsBoundEffectsBeforeDeath/unknown-present
+--- PASS: TestCrashSemanticsBoundEffectsBeforeDeath (0.02s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/known_abort-absent (0.00s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/known_abort-present (0.00s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/known_commit-absent (0.00s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/known_commit-present (0.00s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/unknown-absent (0.00s)
+    --- PASS: TestCrashSemanticsBoundEffectsBeforeDeath/unknown-present (0.01s)
+=== RUN   TestPartialAckAndHistoricalInboxReplay
+--- PASS: TestPartialAckAndHistoricalInboxReplay (0.01s)
+=== RUN   TestKnownCommitCannotBeExplainedByErrorCandidate
+--- PASS: TestKnownCommitCannotBeExplainedByErrorCandidate (0.00s)
+PASS
+ok  	icarus.local/verification/linear	1.067s

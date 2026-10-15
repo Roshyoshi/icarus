@@ -1,0 +1,8 @@
+=== RUN   TestRealLoggedOutDiagnostics
+=== RUN   TestRealLoggedOutDiagnostics/codex
+=== RUN   TestRealLoggedOutDiagnostics/claude
+--- PASS: TestRealLoggedOutDiagnostics (1.64s)
+    --- PASS: TestRealLoggedOutDiagnostics/codex (0.77s)
+    --- PASS: TestRealLoggedOutDiagnostics/claude (0.87s)
+PASS
+ok  	icarus.local/icarus/internal/launcher	2.089s

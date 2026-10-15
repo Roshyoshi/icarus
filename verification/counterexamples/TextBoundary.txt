@@ -1,0 +1,57 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 74 and seed -7324085750181474590 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 53336] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/StopGuard.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15865654666970150611/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15865654666970150611/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15865654666970150611/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-15865654666970150611/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module StopGuard
+Linting of module StopGuard
+Starting... (2026-10-14 23:08:35)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:35.
+Error: Invariant NewBatchAvailable is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ injections = <<0, 0>>
+/\ permitted = ("hook-a" :> FALSE @@ "hook-b" :> FALSE)
+/\ batch = 1
+/\ attempts = {}
+/\ claimed = {}
+/\ turn = 1
+/\ fetched = ("hook-a" :> 0 @@ "hook-b" :> 0)
+
+State 2: <Fetch("hook-a") line 14, col 13 to line 16, col 67 of module StopGuard>
+/\ injections = <<0, 0>>
+/\ permitted = ("hook-a" :> FALSE @@ "hook-b" :> FALSE)
+/\ batch = 1
+/\ attempts = {}
+/\ claimed = {}
+/\ turn = 1
+/\ fetched = ("hook-a" :> 1 @@ "hook-b" :> 0)
+
+State 3: <NextBatch line 33, col 14 to line 34, col 75 of module StopGuard>
+/\ injections = <<0, 0>>
+/\ permitted = ("hook-a" :> FALSE @@ "hook-b" :> FALSE)
+/\ batch = 2
+/\ attempts = {}
+/\ claimed = {}
+/\ turn = 2
+/\ fetched = ("hook-a" :> 1 @@ "hook-b" :> 0)
+
+State 4: <Claim("hook-a") line 18, col 3 to line 22, col 48 of module StopGuard>
+/\ injections = <<0, 0>>
+/\ permitted = ("hook-a" :> TRUE @@ "hook-b" :> FALSE)
+/\ batch = 2
+/\ attempts = {1}
+/\ claimed = {"Done"}
+/\ turn = 2
+/\ fetched = ("hook-a" :> 1 @@ "hook-b" :> 0)
+
+34 states generated, 15 distinct states found, 7 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 00s at (2026-10-14 23:08:35)

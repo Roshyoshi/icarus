@@ -1,0 +1,890 @@
+{
+  "events": [
+    {
+      "event": "invoke",
+      "clock": 5,
+      "call": "376450af-4866-45b2-a3cb-6b1bade43c58",
+      "request": {
+        "version": 1,
+        "operation_id": "895e1d77-5fc5-4963-99e5-0b31213a892d",
+        "command": {
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "body": "one"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "invoke",
+      "clock": 6,
+      "call": "b8c417c2-a592-4e5a-8b1d-37275671447b",
+      "request": {
+        "version": 1,
+        "operation_id": "2c1ad1ad-6dcf-45ba-8776-a52a435b3e37",
+        "command": {
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "body": "two"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "invoke",
+      "clock": 7,
+      "call": "398a78b2-d18f-428a-9542-dfb5b78f293e",
+      "request": {
+        "version": 1,
+        "operation_id": "9152804f-81c5-4939-ba2e-d5b105aa61e0",
+        "command": {
+          "method": "cell_cas",
+          "key": "cell",
+          "expected": 0,
+          "value": "a"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "invoke",
+      "clock": 8,
+      "call": "6e7f635a-3e86-4950-8379-82b430e86d52",
+      "request": {
+        "version": 1,
+        "operation_id": "2d6602f4-15b1-423b-bb3a-9c0366a53e28",
+        "command": {
+          "method": "cell_cas",
+          "key": "cell",
+          "expected": 0,
+          "value": "b"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 9,
+      "call": "376450af-4866-45b2-a3cb-6b1bade43c58",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "message": "573d484d-beb7-4099-a574-61d558947077",
+          "sequence": 1
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "response",
+      "clock": 10,
+      "call": "6e7f635a-3e86-4950-8379-82b430e86d52",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "cell": {
+            "key": "cell",
+            "revision": 1,
+            "value": "b"
+          },
+          "swapped": true
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "response",
+      "clock": 11,
+      "call": "b8c417c2-a592-4e5a-8b1d-37275671447b",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "message": "578538c5-207d-4dab-830a-9c93e0b021b8",
+          "sequence": 2
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "response",
+      "clock": 12,
+      "call": "398a78b2-d18f-428a-9542-dfb5b78f293e",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "cell": {
+            "key": "cell",
+            "revision": 1,
+            "value": "b"
+          },
+          "swapped": false
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 13,
+      "call": "b2ea7c97-81ca-45b8-8943-6826adbadf9d",
+      "request": {
+        "version": 1,
+        "operation_id": "895e1d77-5fc5-4963-99e5-0b31213a892d",
+        "command": {
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "body": "one"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 14,
+      "call": "b2ea7c97-81ca-45b8-8943-6826adbadf9d",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "message": "573d484d-beb7-4099-a574-61d558947077",
+          "sequence": 1
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 15,
+      "call": "d16de914-d7e1-4ef7-a796-8946338e3485",
+      "request": {
+        "version": 1,
+        "operation_id": "895e1d77-5fc5-4963-99e5-0b31213a892d",
+        "command": {
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "body": "changed"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 16,
+      "call": "d16de914-d7e1-4ef7-a796-8946338e3485",
+      "response": {
+        "version": 1,
+        "ok": false,
+        "error": "operation_id reused with different arguments"
+      },
+      "code": 1,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 17,
+      "call": "2922f5d9-5c17-490b-b147-2cf71e52bce3",
+      "request": {
+        "version": 1,
+        "operation_id": "509663cc-d2cb-418b-8724-4da7de78024c",
+        "command": {
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "body": "committed without reply"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": "after_commit"
+    },
+    {
+      "event": "crash",
+      "clock": 18,
+      "call": "2922f5d9-5c17-490b-b147-2cf71e52bce3",
+      "response": null,
+      "code": 86,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 19,
+      "call": "3d09d305-a4c4-4de9-94d0-592bf2d77d26",
+      "request": {
+        "version": 1,
+        "operation_id": "4dd334c5-5a47-47ab-b6d0-ebf9736a8dac",
+        "command": {
+          "method": "inbox",
+          "limit": 2
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 20,
+      "call": "3d09d305-a4c4-4de9-94d0-592bf2d77d26",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "acked": 0,
+          "batch_end": 2,
+          "messages": [
+            {
+              "body": "one",
+              "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+              "message": "573d484d-beb7-4099-a574-61d558947077",
+              "sequence": 1
+            },
+            {
+              "body": "two",
+              "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+              "message": "578538c5-207d-4dab-830a-9c93e0b021b8",
+              "sequence": 2
+            }
+          ]
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 21,
+      "call": "a5301ac0-e07d-44ca-9f99-28157bca7ed3",
+      "request": {
+        "version": 1,
+        "operation_id": "05ef26ad-e0d7-41bb-bf02-39da4615d119",
+        "command": {
+          "method": "ack",
+          "through": "578538c5-207d-4dab-830a-9c93e0b021b8"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 22,
+      "call": "a5301ac0-e07d-44ca-9f99-28157bca7ed3",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "acked": 2
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 23,
+      "call": "29319e4d-17c6-4500-929f-e44a52e09cda",
+      "request": {
+        "version": 1,
+        "operation_id": "d6a917f0-bc71-42b6-af4e-754dedd7c080",
+        "command": {
+          "method": "inbox",
+          "limit": 4
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 24,
+      "call": "29319e4d-17c6-4500-929f-e44a52e09cda",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "acked": 2,
+          "batch_end": 3,
+          "messages": [
+            {
+              "body": "committed without reply",
+              "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+              "message": "9c549f0e-5537-484d-91f0-456777e2979e",
+              "sequence": 3
+            }
+          ]
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 25,
+      "call": "aa36550f-04bc-4bbd-9c57-514536335b90",
+      "request": {
+        "version": 1,
+        "operation_id": "4dd334c5-5a47-47ab-b6d0-ebf9736a8dac",
+        "command": {
+          "method": "inbox",
+          "limit": 2
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 26,
+      "call": "aa36550f-04bc-4bbd-9c57-514536335b90",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "acked": 0,
+          "batch_end": 2,
+          "messages": [
+            {
+              "body": "one",
+              "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+              "message": "573d484d-beb7-4099-a574-61d558947077",
+              "sequence": 1
+            },
+            {
+              "body": "two",
+              "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+              "message": "578538c5-207d-4dab-830a-9c93e0b021b8",
+              "sequence": 2
+            }
+          ]
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 27,
+      "call": "823e3120-d186-4232-be2e-53e2b3bc5c00",
+      "request": {
+        "version": 1,
+        "operation_id": "dbb9a9b4-33e3-4166-96e2-8dc927c4a584",
+        "command": {
+          "method": "ack",
+          "through": "573d484d-beb7-4099-a574-61d558947077"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 28,
+      "call": "823e3120-d186-4232-be2e-53e2b3bc5c00",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "acked": 2
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 29,
+      "call": "f9f0f8f0-7b9a-4e9c-85b4-3de45a69302f",
+      "request": {
+        "version": 1,
+        "operation_id": "cb611d5c-8bde-4ef0-8359-3dd69037bf7b",
+        "command": {
+          "method": "task_create",
+          "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "description": "completion race"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 30,
+      "call": "f9f0f8f0-7b9a-4e9c-85b4-3de45a69302f",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 31,
+      "call": "ca2eada0-7651-45fe-8ac4-d47d1fce57a6",
+      "request": {
+        "version": 1,
+        "operation_id": "fd20bb1c-ca91-4268-81d8-cfecf80b9c7d",
+        "command": {
+          "method": "task_finish",
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          }
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "invoke",
+      "clock": 32,
+      "call": "38391b5a-1200-4f71-a28f-059c01daf324",
+      "request": {
+        "version": 1,
+        "operation_id": "66c3a96a-9f2f-4ba3-8198-6b46b4747185",
+        "command": {
+          "method": "task_finish",
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd",
+          "result": {
+            "status": "failure",
+            "value": "winner-b"
+          }
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 33,
+      "call": "ca2eada0-7651-45fe-8ac4-d47d1fce57a6",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "description": "completion race",
+          "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          },
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "response",
+      "clock": 34,
+      "call": "38391b5a-1200-4f71-a28f-059c01daf324",
+      "response": {
+        "version": 1,
+        "ok": false,
+        "error": "terminal task result is immutable"
+      },
+      "code": 1,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 35,
+      "call": "f5939190-6ebd-4b22-b31b-15831d3afbce",
+      "request": {
+        "version": 1,
+        "operation_id": "fd20bb1c-ca91-4268-81d8-cfecf80b9c7d",
+        "command": {
+          "method": "task_finish",
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          }
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 36,
+      "call": "f5939190-6ebd-4b22-b31b-15831d3afbce",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "description": "completion race",
+          "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          },
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    },
+    {
+      "event": "invoke",
+      "clock": 37,
+      "call": "aaae480d-b60c-4de9-a829-67f20868ba3b",
+      "request": {
+        "version": 1,
+        "operation_id": "66c3a96a-9f2f-4ba3-8198-6b46b4747185",
+        "command": {
+          "method": "task_finish",
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          }
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+      },
+      "crash": null
+    },
+    {
+      "event": "response",
+      "clock": 38,
+      "call": "aaae480d-b60c-4de9-a829-67f20868ba3b",
+      "response": {
+        "version": 1,
+        "ok": true,
+        "result": {
+          "description": "completion race",
+          "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          },
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        }
+      },
+      "code": 0,
+      "stderr": ""
+    }
+  ],
+  "journal": [
+    {
+      "operation_id": "895e1d77-5fc5-4963-99e5-0b31213a892d",
+      "request": {
+        "command": {
+          "body": "one",
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "895e1d77-5fc5-4963-99e5-0b31213a892d",
+        "version": 1
+      },
+      "result": {
+        "message": "573d484d-beb7-4099-a574-61d558947077",
+        "sequence": 1
+      },
+      "sequence": 3
+    },
+    {
+      "operation_id": "2d6602f4-15b1-423b-bb3a-9c0366a53e28",
+      "request": {
+        "command": {
+          "expected": 0,
+          "key": "cell",
+          "method": "cell_cas",
+          "value": "b"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "2d6602f4-15b1-423b-bb3a-9c0366a53e28",
+        "version": 1
+      },
+      "result": {
+        "cell": {
+          "key": "cell",
+          "revision": 1,
+          "value": "b"
+        },
+        "swapped": true
+      },
+      "sequence": 4
+    },
+    {
+      "operation_id": "2c1ad1ad-6dcf-45ba-8776-a52a435b3e37",
+      "request": {
+        "command": {
+          "body": "two",
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "2c1ad1ad-6dcf-45ba-8776-a52a435b3e37",
+        "version": 1
+      },
+      "result": {
+        "message": "578538c5-207d-4dab-830a-9c93e0b021b8",
+        "sequence": 2
+      },
+      "sequence": 5
+    },
+    {
+      "operation_id": "9152804f-81c5-4939-ba2e-d5b105aa61e0",
+      "request": {
+        "command": {
+          "expected": 0,
+          "key": "cell",
+          "method": "cell_cas",
+          "value": "a"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "9152804f-81c5-4939-ba2e-d5b105aa61e0",
+        "version": 1
+      },
+      "result": {
+        "cell": {
+          "key": "cell",
+          "revision": 1,
+          "value": "b"
+        },
+        "swapped": false
+      },
+      "sequence": 6
+    },
+    {
+      "operation_id": "509663cc-d2cb-418b-8724-4da7de78024c",
+      "request": {
+        "command": {
+          "body": "committed without reply",
+          "method": "send",
+          "to": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "509663cc-d2cb-418b-8724-4da7de78024c",
+        "version": 1
+      },
+      "result": {
+        "message": "9c549f0e-5537-484d-91f0-456777e2979e",
+        "sequence": 3
+      },
+      "sequence": 7
+    },
+    {
+      "operation_id": "4dd334c5-5a47-47ab-b6d0-ebf9736a8dac",
+      "request": {
+        "command": {
+          "limit": 2,
+          "method": "inbox"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "4dd334c5-5a47-47ab-b6d0-ebf9736a8dac",
+        "version": 1
+      },
+      "result": {
+        "acked": 0,
+        "batch_end": 2,
+        "messages": [
+          {
+            "body": "one",
+            "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+            "message": "573d484d-beb7-4099-a574-61d558947077",
+            "sequence": 1
+          },
+          {
+            "body": "two",
+            "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+            "message": "578538c5-207d-4dab-830a-9c93e0b021b8",
+            "sequence": 2
+          }
+        ]
+      },
+      "sequence": 8
+    },
+    {
+      "operation_id": "05ef26ad-e0d7-41bb-bf02-39da4615d119",
+      "request": {
+        "command": {
+          "method": "ack",
+          "through": "578538c5-207d-4dab-830a-9c93e0b021b8"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "05ef26ad-e0d7-41bb-bf02-39da4615d119",
+        "version": 1
+      },
+      "result": {
+        "acked": 2
+      },
+      "sequence": 9
+    },
+    {
+      "operation_id": "d6a917f0-bc71-42b6-af4e-754dedd7c080",
+      "request": {
+        "command": {
+          "limit": 4,
+          "method": "inbox"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "d6a917f0-bc71-42b6-af4e-754dedd7c080",
+        "version": 1
+      },
+      "result": {
+        "acked": 2,
+        "batch_end": 3,
+        "messages": [
+          {
+            "body": "committed without reply",
+            "from": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+            "message": "9c549f0e-5537-484d-91f0-456777e2979e",
+            "sequence": 3
+          }
+        ]
+      },
+      "sequence": 10
+    },
+    {
+      "operation_id": "dbb9a9b4-33e3-4166-96e2-8dc927c4a584",
+      "request": {
+        "command": {
+          "method": "ack",
+          "through": "573d484d-beb7-4099-a574-61d558947077"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "dbb9a9b4-33e3-4166-96e2-8dc927c4a584",
+        "version": 1
+      },
+      "result": {
+        "acked": 2
+      },
+      "sequence": 11
+    },
+    {
+      "operation_id": "cb611d5c-8bde-4ef0-8359-3dd69037bf7b",
+      "request": {
+        "command": {
+          "description": "completion race",
+          "method": "task_create",
+          "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "cb611d5c-8bde-4ef0-8359-3dd69037bf7b",
+        "version": 1
+      },
+      "result": {
+        "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+      },
+      "sequence": 12
+    },
+    {
+      "operation_id": "fd20bb1c-ca91-4268-81d8-cfecf80b9c7d",
+      "request": {
+        "command": {
+          "method": "task_finish",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          },
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "fd20bb1c-ca91-4268-81d8-cfecf80b9c7d",
+        "version": 1
+      },
+      "result": {
+        "description": "completion race",
+        "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "result": {
+          "status": "success",
+          "value": "winner-a"
+        },
+        "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+      },
+      "sequence": 13
+    },
+    {
+      "operation_id": "66c3a96a-9f2f-4ba3-8198-6b46b4747185",
+      "request": {
+        "command": {
+          "method": "task_finish",
+          "result": {
+            "status": "success",
+            "value": "winner-a"
+          },
+          "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+        },
+        "launch": "b9ece3bd-3f14-4f50-8616-19fd7d5efe87",
+        "member": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "operation_id": "66c3a96a-9f2f-4ba3-8198-6b46b4747185",
+        "version": 1
+      },
+      "result": {
+        "description": "completion race",
+        "owner": "7907d1ec-56c8-4451-b7c7-5c5275b57828",
+        "result": {
+          "status": "success",
+          "value": "winner-a"
+        },
+        "task": "bdf47bdc-6dc8-4c8b-bfa1-6035aca63efd"
+      },
+      "sequence": 14
+    }
+  ],
+  "linearization": [
+    "376450af-4866-45b2-a3cb-6b1bade43c58",
+    "b8c417c2-a592-4e5a-8b1d-37275671447b",
+    "6e7f635a-3e86-4950-8379-82b430e86d52",
+    "398a78b2-d18f-428a-9542-dfb5b78f293e",
+    "b2ea7c97-81ca-45b8-8943-6826adbadf9d",
+    "d16de914-d7e1-4ef7-a796-8946338e3485",
+    "2922f5d9-5c17-490b-b147-2cf71e52bce3",
+    "3d09d305-a4c4-4de9-94d0-592bf2d77d26",
+    "a5301ac0-e07d-44ca-9f99-28157bca7ed3",
+    "29319e4d-17c6-4500-929f-e44a52e09cda",
+    "aa36550f-04bc-4bbd-9c57-514536335b90",
+    "823e3120-d186-4232-be2e-53e2b3bc5c00",
+    "f9f0f8f0-7b9a-4e9c-85b4-3de45a69302f",
+    "ca2eada0-7651-45fe-8ac4-d47d1fce57a6",
+    "38391b5a-1200-4f71-a28f-059c01daf324",
+    "f5939190-6ebd-4b22-b31b-15831d3afbce",
+    "aaae480d-b60c-4de9-a829-67f20868ba3b"
+  ]
+}

@@ -1,0 +1,35 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 130 and seed -7140179561823552030 with 2 workers on 10 cores with 3641MB heap and 64MB offheap memory [pid: 51702] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/Mailbox.tla
+Parsing file /Users/roshanhegde/icarus/verification/Protocol.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2328057828283374758/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2328057828283374758/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2328057828283374758/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-2328057828283374758/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Protocol
+Semantic processing of module Mailbox
+Linting of module Protocol
+Linting of module Mailbox
+Starting... (2026-10-14 23:08:09)
+Implied-temporal checking--satisfiability problem has 3 branches.
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:09.
+Checking 3 branches of temporal properties for the current state space with 81747 total distinct states at (2026-10-14 23:08:12)
+Finished checking temporal properties in 00s at 2026-10-14 23:08:13
+Progress(13) at 2026-10-14 23:08:13: 213,809 states generated (213,809 s/min), 27,249 distinct states found (27,249 ds/min), 9,308 states left on queue.
+Progress(21) at 2026-10-14 23:08:22: 1,086,339 states generated, 87,704 distinct states found, 0 states left on queue.
+Checking 3 branches of temporal properties for the complete state space with 263112 total distinct states at (2026-10-14 23:08:22)
+Finished checking temporal properties in 03s at 2026-10-14 23:08:25
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.7E-9
+  based on the actual fingerprints:  val = 9.4E-11
+1086339 states generated, 87704 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 3).
+Finished in 16s at (2026-10-14 23:08:26)

@@ -1,0 +1,24 @@
+{
+  "architecture": "aarch64",
+  "commit_to_observation": {
+    "max_us": 207.5,
+    "p50_us": 98.667,
+    "p95_us": 163.20899999999997,
+    "samples": 25
+  },
+  "hook_process_empty_mailbox": {
+    "max_us": 8784.5,
+    "p50_us": 2263.5,
+    "p95_us": 2664.9170000000004,
+    "samples": 25
+  },
+  "model_latency_included": false,
+  "platform": "macos",
+  "scope": "one writer, one reader, warm connections; hook includes process startup and DB open",
+  "storage": "SQLite WAL synchronous=FULL, temporary local filesystem",
+  "throughput": {
+    "durable_cas": 500,
+    "operations_per_second": 250.2666434669488
+  },
+  "waiters_with_datagram_socket": 25
+}

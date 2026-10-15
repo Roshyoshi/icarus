@@ -1,0 +1,202 @@
+{
+  "home": "/private/tmp/icarus-audit-startup-kx2wVI",
+  "total": 720,
+  "failures": [
+    {
+      "group": "r0",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r0",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r0",
+      "n": 2,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r0",
+      "n": 4,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r0",
+      "n": 5,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r0",
+      "n": 6,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r1",
+      "n": 2,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r7",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r8",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r9",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r11",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r14",
+      "n": 4,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r16",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 2,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 3,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 4,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 6,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 7,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 8,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 9,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r20",
+      "n": 10,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r21",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r26",
+      "n": 2,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r27",
+      "n": 2,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r28",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r29",
+      "n": 0,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    },
+    {
+      "group": "r29",
+      "n": 1,
+      "code": 1,
+      "out": "",
+      "err": "icarus-sync: database is locked: Error code 5: database is locked\n"
+    }
+  ]
+}

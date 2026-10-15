@@ -1,0 +1,20 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 2,
+  "cases": [
+    {
+      "ending": "cancel",
+      "later_message": "ready",
+      "wait_paused_after_empty_read": true,
+      "wait_result": "cancelled"
+    },
+    {
+      "ending": "disconnect",
+      "later_message": "ready",
+      "wait_paused_after_empty_read": true,
+      "wait_result": "cancelled"
+    }
+  ],
+  "elapsed_ms": 3145.165042,
+  "test": "wait_cancellation_and_disconnect"
+}

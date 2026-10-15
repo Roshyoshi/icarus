@@ -1,0 +1,26 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 3,
+  "cases": [
+    {
+      "kill_point": "after_empty_read",
+      "notification_policy": "all_dropped",
+      "restarted_wait": "ready",
+      "wait_for": "messages"
+    },
+    {
+      "kill_point": "after_empty_read",
+      "notification_policy": "all_dropped",
+      "restarted_wait": "ready",
+      "wait_for": "tasks"
+    },
+    {
+      "kill_point": "after_empty_read",
+      "notification_policy": "all_dropped",
+      "restarted_wait": "ready",
+      "wait_for": "cells"
+    }
+  ],
+  "elapsed_ms": 1105.0831249999999,
+  "test": "waiter_restart"
+}

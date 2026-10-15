@@ -1,0 +1,16 @@
+Model checking completed. No error has been found.
+Model checking completed. No error has been found.
+Model checking completed. No error has been found.
+Model checking completed. No error has been found.
+History accepted: 17 calls, 12 durable effects, 1 unanswered commit, 2 errors, 3 successful replays.
+Model checking completed. No error has been found.
+Error: Invariant TraceAccepted is violated.
+Error: Invariant TraceAccepted is violated.
+Error: Invariant TraceAccepted is violated.
+Error: Invariant Safety is violated.
+Error: Temporal property EventuallyObserve was violated.
+Error: Invariant Safety is violated.
+Error: Invariant Distinct is violated.
+Error: Invariant Lineage is violated.
+Error: Action property Monotonic is violated.
+Error: Invariant NewBatchAvailable is violated.

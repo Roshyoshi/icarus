@@ -1,0 +1,59 @@
+{
+  "checked_at_utc": "2026-10-15T03:21:56.161Z",
+  "auditor_sha256": "5940a627875af87f693c6001ec7bd6fb0e784da01c269f242e13caa0c87ef4ee",
+  "history_sha256": "56ae5f64e0eb1b51930733f790e4f4bd4c3a9fb2dd519fcc16cce1c03f1d8c82",
+  "binary_sha256": "09717a512a487987c55cdb68af80d4933ada3602861f76e0f9054687b3beae62",
+  "histories": 1000,
+  "workload_calls": 50000,
+  "total_calls": 86912,
+  "independently_recomputed_routes": {
+    "cli": 47825,
+    "mcp": 39087
+  },
+  "independently_recomputed_methods": {
+    "launch_start": 4000,
+    "bind": 7000,
+    "task_create": 2000,
+    "send": 16522,
+    "cell_cas": 11587,
+    "inbox": 16756,
+    "ack": 8779,
+    "task_finish": 6852,
+    "cell_read": 4781,
+    "task_read": 3802,
+    "members": 4833
+  },
+  "histories_with_submitted_request_overlap": 1000,
+  "fault_by_concurrency": {
+    "before_commit/clients-2": 112,
+    "before_commit/clients-4": 111,
+    "before_commit/clients-8": 111,
+    "after_commit/clients-2": 111,
+    "after_commit/clients-4": 111,
+    "after_commit/clients-8": 111,
+    "sigkill/clients-2": 111,
+    "sigkill/clients-4": 111,
+    "sigkill/clients-8": 111
+  },
+  "fault_public_read_observations": {
+    "before_commit/known_abort/no-effect-observed-before-replay": 334,
+    "after_commit/known_commit/effect-observed-before-replay": 333,
+    "sigkill/unknown/no-effect-observed-before-replay": 333
+  },
+  "checks": [
+    "all generated histories accepted",
+    "exact workload quota per history",
+    "ordered contiguous seeds and indices",
+    "all nine fault-by-concurrency combinations",
+    "invocation < submission < response/death",
+    "each workload contains actual overlapping submitted requests",
+    "public inbox read strictly after original death and before identical replay",
+    "deterministic abort shows zero messages before replay",
+    "deterministic commit shows its stable message ID before replay",
+    "raw history and binary hashes match summary"
+  ],
+  "limitations": [
+    "No-effect means not observed by the pre-replay public read; it is not a power-loss or storage-internals audit.",
+    "Unknown SIGKILL histories can be linearized as aborts when no prior effect is observed; deterministic postcommit failures separately test committed effects without replies."
+  ]
+}

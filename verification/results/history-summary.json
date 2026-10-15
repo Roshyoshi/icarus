@@ -1,0 +1,10 @@
+{
+  "attempts": 11,
+  "durable_operations": 10,
+  "ambiguous_commits": 1,
+  "linearizable": true,
+  "negative_controls": [
+    "lost ambiguous commit",
+    "double CAS success"
+  ]
+}

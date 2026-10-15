@@ -1,0 +1,67 @@
+{
+  "tlc_sha256": "0f56d6a813368c48008dfbecb23a73ab43a4a5e1bf09f026782a674aa9d4b3c9",
+  "protocol_sha256": "1b2e225f5429822443025ec7d6b79e07afff782bd040c7015fd130ba917d2022",
+  "checked_at": "2026-10-15T03:08:35.447Z",
+  "models": [
+    {
+      "model": "Transactions",
+      "bound": "five operation IDs; one mailbox/cell/task; two competing CAS and finishes",
+      "generated": 56148,
+      "distinct": 7116,
+      "depth": 16,
+      "elapsed": "00s",
+      "result": "pass"
+    },
+    {
+      "model": "Mailbox",
+      "bound": "three messages; two hooks; batch limits 1..2; at most one crash",
+      "generated": 1086339,
+      "distinct": 87704,
+      "depth": 21,
+      "elapsed": "16s",
+      "result": "pass"
+    },
+    {
+      "model": "Identity",
+      "bound": "five members including grandchild; two launch generations",
+      "generated": 486,
+      "distinct": 75,
+      "depth": 8,
+      "elapsed": "00s",
+      "result": "pass"
+    },
+    {
+      "model": "StopGuard",
+      "bound": "two hooks; two successive batches; repeated assistant text; no native turn ID",
+      "generated": 727,
+      "distinct": 125,
+      "depth": 9,
+      "elapsed": "00s",
+      "result": "pass"
+    },
+    {
+      "model": "RecordedTrace",
+      "bound": "17 calls, one mailbox/cell/task, one known post-commit crash",
+      "generated": 18,
+      "distinct": 18,
+      "depth": 18,
+      "elapsed": "00s",
+      "result": "pass"
+    }
+  ],
+  "rejected_model_mutants": [
+    "PrematureAck",
+    "StaleSnapshot",
+    "NonAtomicReplay",
+    "AliasProviders",
+    "ShallowLineage",
+    "StaleRebind",
+    "TextBoundary"
+  ],
+  "rejected_trace_mutants": [
+    "BrokenTrace",
+    "BrokenReplay",
+    "BrokenConflict"
+  ],
+  "claim": "finite abstraction checks and sampled API trace conformance; not full refinement or power-loss verification"
+}

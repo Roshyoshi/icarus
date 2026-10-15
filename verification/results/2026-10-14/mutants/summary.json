@@ -1,0 +1,46 @@
+{
+  "baseline": "passed",
+  "elapsed_ms": 114161,
+  "results": [
+    {
+      "mutation": "non_atomic_replay",
+      "test": "every_mutation_recovers_at_each_commit_crash_boundary",
+      "detected": true,
+      "exit_code": 101,
+      "required_diagnostic": "duplicate or missing physical effect",
+      "binary_sha256": "f67f42c56d7b4f204b3047770d30b1bcbc223f0c4e712123192e1fdc7009b0bc"
+    },
+    {
+      "mutation": "premature_ack",
+      "test": "fetch_and_injection_do_not_acknowledge_mail",
+      "detected": true,
+      "exit_code": 101,
+      "required_diagnostic": "fetch or injection acknowledged mail without ack",
+      "binary_sha256": "9b457bd32f558e9e8eb7e731b32c1745f060fb0c0af06428552c3a976bbcd43f"
+    },
+    {
+      "mutation": "stale_snapshot",
+      "test": "wait_schedules_observe_commits_before_and_after_each_read_boundary",
+      "detected": true,
+      "exit_code": 101,
+      "required_diagnostic": "helper exceeded 5s deadline",
+      "binary_sha256": "5f142c4d323517fca7d98c33f04e154110e3dae3c7f6c7623720405e1b56ef59"
+    },
+    {
+      "mutation": "ignore_ancestor_generation",
+      "test": "ancestor_resume_rejects_descendant_calls_and_replays_without_rebinding",
+      "detected": true,
+      "exit_code": 101,
+      "required_diagnostic": "assertion failed: !stale_output.status.success()",
+      "binary_sha256": "835aa07a68bbc0b5f24e1b6ba04fe13b2cc7359467fedbbdd54d28e73f8d1116"
+    },
+    {
+      "mutation": "assistant_text_boundary",
+      "test": "repeated_stop_text_can_deliver_the_next_acknowledgement_batch",
+      "detected": true,
+      "exit_code": 101,
+      "required_diagnostic": "identical assistant text must not suppress a later batch",
+      "binary_sha256": "f4f8733cc1d748cbf762115ccf66d1d844b8739010742d1737cf9bdecde72ca3"
+    }
+  ]
+}

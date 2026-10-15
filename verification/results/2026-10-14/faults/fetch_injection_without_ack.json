@@ -1,0 +1,20 @@
+{
+  "binary": "/Users/roshanhegde/icarus/verification/out/acceptance-macos/frozen/icarus-sync-v2",
+  "case_count": 2,
+  "cases": [
+    {
+      "after_explicit_ack": 1,
+      "before_explicit_ack": 0,
+      "crash": "after_fetch",
+      "retained_messages": 1
+    },
+    {
+      "after_explicit_ack": 1,
+      "before_explicit_ack": 0,
+      "crash": "after_injection",
+      "retained_messages": 1
+    }
+  ],
+  "elapsed_ms": 969.6174579999999,
+  "test": "fetch_injection_without_ack"
+}

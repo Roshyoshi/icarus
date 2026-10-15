@@ -1,0 +1,17 @@
+   Compiling icarus-sync v0.1.0 (/Users/roshanhegde/icarus/sync)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.67s
+     Running tests/verification.rs (target/debug/deps/verification-1d63bf553407e295)
+
+running 9 tests
+test ancestor_resume_rejects_descendant_calls_and_replays_without_rebinding ... ok
+test cancellation_and_disconnect_stop_only_the_pending_wait ... ok
+test cold_database_startup_allows_concurrent_helpers ... ok
+test every_mutation_recovers_at_each_commit_crash_boundary ... ok
+test fetch_and_injection_do_not_acknowledge_mail ... ok
+test hook_fetch_ack_and_resume_races_keep_mailbox_and_identity_contracts ... ok
+test killed_waiters_recover_all_wait_kinds_without_notifications ... ok
+test repeated_stop_text_can_deliver_the_next_acknowledgement_batch ... ok
+test wait_schedules_observe_commits_before_and_after_each_read_boundary ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 242.08s
+

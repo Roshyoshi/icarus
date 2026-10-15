@@ -1,0 +1,20 @@
+
+running 1 test
+test repeated_stop_text_can_deliver_the_next_acknowledgement_batch ... FAILED
+
+failures:
+
+failures:
+    repeated_stop_text_can_deliver_the_next_acknowledgement_batch
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 1.08s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/verification.rs (target/debug/deps/verification-1d63bf553407e295)
+
+thread 'repeated_stop_text_can_deliver_the_next_acknowledgement_batch' (7599839) panicked at sync/tests/verification.rs:458:5:
+assertion `left == right` failed: identical assistant text must not suppress a later batch
+  left: Null
+ right: "block"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `--test verification`

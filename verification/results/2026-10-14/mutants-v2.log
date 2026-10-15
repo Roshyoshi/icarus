@@ -1,0 +1,5 @@
+non_atomic_replay: detected
+premature_ack: detected
+stale_snapshot: detected
+ignore_ancestor_generation: detected
+assistant_text_boundary: detected

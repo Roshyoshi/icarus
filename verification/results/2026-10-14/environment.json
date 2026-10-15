@@ -1,0 +1,24 @@
+{
+  "date_local": "2026-10-14",
+  "os": "Darwin melchior 25.5.0 Darwin Kernel Version 25.5.0: Mon Apr 27 20:41:26 PDT 2026; root:xnu-12377.121.6~2/RELEASE_ARM64_T8132 arm64",
+  "version": {
+    "protocol": 1,
+    "sqlite_source_id": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "sqlite_version": "3.53.2",
+    "version": "0.1.0"
+  },
+  "binary_sha256": "09717a512a487987c55cdb68af80d4933ada3602861f76e0f9054687b3beae62",
+  "rust": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+  "node": "v24.15.0",
+  "linux": {
+    "executed": false,
+    "attempt": "configured local Nix rosetta-builder SSH port31122",
+    "failure": "Connection timed out during banner exchange"
+  },
+  "live_native_tests": "deferred by user",
+  "go": "go1.26.8",
+  "java": "21.0.11",
+  "codex": "0.162.1",
+  "claude": "2.1.300",
+  "tlc_sha256": "0f56d6a813368c48008dfbecb23a73ab43a4a5e1bf09f026782a674aa9d4b3c9"
+}

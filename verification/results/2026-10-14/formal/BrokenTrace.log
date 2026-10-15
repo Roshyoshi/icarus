@@ -1,0 +1,55 @@
+TLC2 Version 2026.10.13.164326 (rev: 210df3a)
+Running breadth-first search Model-Checking with fp 67 and seed 7919053995341667544 with 1 worker on 10 cores with 3641MB heap and 64MB offheap memory [pid: 52862] (Mac OS X 26.5.1 aarch64, Azul Systems, Inc. 21.0.11 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/roshanhegde/icarus/verification/out/BrokenTrace.tla
+Parsing file /Users/roshanhegde/icarus/verification/Trace.tla
+Parsing file /Users/roshanhegde/icarus/verification/Protocol.tla
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-833847810438392252/Naturals.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-833847810438392252/Sequences.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-833847810438392252/FiniteSets.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/h5/1fr949kj6sd5z6xhdmcp7yf00000gn/T/tlc-833847810438392252/TLC.tla (jar:file:/private/tmp/icarus-research/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Protocol
+Semantic processing of module Trace
+Semantic processing of module BrokenTrace
+Linting of module Protocol
+Linting of module Trace
+Linting of module BrokenTrace
+Starting... (2026-10-14 23:08:27)
+Implied-temporal checking--satisfiability problem has 1 branches.
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-14 23:08:27.
+Error: Invariant TraceAccepted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ durable = [ revision |-> 0,
+  acked |-> 0,
+  batch |-> 0,
+  mail |-> <<>>,
+  value |-> "null",
+  task |-> FALSE,
+  terminal |-> "pending",
+  ledger |-> <<>> ]
+/\ valid = TRUE
+/\ cursor = 1
+
+State 2: <Advance line 8, col 3 to line 13, col 23 of module Trace>
+/\ durable = [revision |-> 0, acked |-> 0, batch |-> 0, mail |-> <<"573d484d-beb7-4099-a574-61d558947077">>, value |-> "null", task |-> FALSE, terminal |-> "pending", ledger |-> ("895e1d77-5fc5-4963-99e5-0b31213a892d" :> [command |-> [kind |-> "send", input |-> "\"one\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [sequence |-> 1, message |-> "573d484d-beb7-4099-a574-61d558947077"]]])]
+/\ valid = TRUE
+/\ cursor = 2
+
+State 3: <Advance line 8, col 3 to line 13, col 23 of module Trace>
+/\ durable = [revision |-> 0, acked |-> 0, batch |-> 0, mail |-> <<"573d484d-beb7-4099-a574-61d558947077", "578538c5-207d-4dab-830a-9c93e0b021b8">>, value |-> "null", task |-> FALSE, terminal |-> "pending", ledger |-> ("895e1d77-5fc5-4963-99e5-0b31213a892d" :> [command |-> [kind |-> "send", input |-> "\"one\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [sequence |-> 1, message |-> "573d484d-beb7-4099-a574-61d558947077"]]] @@ "2c1ad1ad-6dcf-45ba-8776-a52a435b3e37" :> [command |-> [kind |-> "send", input |-> "\"two\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [sequence |-> 2, message |-> "578538c5-207d-4dab-830a-9c93e0b021b8"]]])]
+/\ valid = TRUE
+/\ cursor = 3
+
+State 4: <Advance line 8, col 3 to line 13, col 23 of module Trace>
+/\ durable = [revision |-> 1, acked |-> 0, batch |-> 0, mail |-> <<"573d484d-beb7-4099-a574-61d558947077", "578538c5-207d-4dab-830a-9c93e0b021b8">>, value |-> "\"b\"", task |-> FALSE, terminal |-> "pending", ledger |-> ("895e1d77-5fc5-4963-99e5-0b31213a892d" :> [command |-> [kind |-> "send", input |-> "\"one\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [sequence |-> 1, message |-> "573d484d-beb7-4099-a574-61d558947077"]]] @@ "2c1ad1ad-6dcf-45ba-8776-a52a435b3e37" :> [command |-> [kind |-> "send", input |-> "\"two\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [sequence |-> 2, message |-> "578538c5-207d-4dab-830a-9c93e0b021b8"]]] @@ "2d6602f4-15b1-423b-bb3a-9c0366a53e28" :> [command |-> [kind |-> "cell_cas", input |-> "\"b\"", expected |-> 0, limit |-> 0, sequence |-> 0], reply |-> [ok |-> TRUE, result |-> [swapped |-> TRUE, revision |-> 1, output |-> "\"b\""]]])]
+/\ valid = FALSE
+/\ cursor = 4
+
+4 states generated, 4 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 00s at (2026-10-14 23:08:27)

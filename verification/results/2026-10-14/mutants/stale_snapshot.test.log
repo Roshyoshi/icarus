@@ -1,0 +1,18 @@
+
+running 1 test
+test wait_schedules_observe_commits_before_and_after_each_read_boundary ... FAILED
+
+failures:
+
+failures:
+    wait_schedules_observe_commits_before_and_after_each_read_boundary
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 7.70s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running tests/verification.rs (target/debug/deps/verification-1d63bf553407e295)
+
+thread 'wait_schedules_observe_commits_before_and_after_each_read_boundary' (7594326) panicked at sync/tests/verification_support/mod.rs:234:13:
+helper exceeded 5s deadline
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `--test verification`

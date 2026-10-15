@@ -1,0 +1,13 @@
+{
+  "home": "/private/tmp/icarus-audit-hook-tHak0X",
+  "firstStopBlocked": true,
+  "secondStop": {},
+  "retained": [
+    {
+      "body": "second",
+      "from": "a8fbdebf-0d62-447a-a3b0-0f4ba76edaa3",
+      "message": "240711e7-87c3-40dd-9e1e-186d65c377b9",
+      "sequence": 2
+    }
+  ]
+}
