@@ -1,0 +1,6 @@
+/target/
+/bin/
+/.tools/
+/verification/out/
+*.db*
+*.sock
