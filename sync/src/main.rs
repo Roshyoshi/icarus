@@ -1,5 +1,5 @@
 use anyhow::{Context, Result, bail, ensure};
-use icarus_sync::{mcp, store::Store, types::*, wake};
+use icarus_sync::{crash_point, hooks, mcp, store::Store, types::*, wake};
 use std::{
     io::{self, Read, Write},
     path::PathBuf,
@@ -17,6 +17,7 @@ fn run() -> Result<()> {
     let mut home = std::env::var_os("ICARUS_HOME").map(PathBuf::from);
     let mut group = std::env::var("ICARUS_GROUP").ok();
     let mut launch = std::env::var("ICARUS_LAUNCH").ok();
+    let mut provider = std::env::var("ICARUS_PROVIDER").ok();
     let mut mode = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
@@ -24,9 +25,10 @@ fn run() -> Result<()> {
             "--home" => home = Some(args.next().context("--home requires path")?.into()),
             "--group" => group = Some(args.next().context("--group requires ID")?),
             "--launch" => launch = Some(args.next().context("--launch requires ID")?),
+            "--provider" => provider = Some(args.next().context("--provider requires name")?),
             "--help" | "-h" => {
                 println!(
-                    "icarus-sync [--home PATH] [--group GROUP] [--launch ID] api|mcp|history\nicarus-sync version\nJSON protocol v1; api reads one request from stdin. See docs/protocol.md."
+                    "icarus-sync [--home PATH] [--group GROUP] [--launch ID] [--provider codex|claude] api|mcp|hook|history\nicarus-sync version\nJSON protocol v1; api reads one request from stdin. See docs/protocol.md."
                 );
                 return Ok(());
             }
@@ -34,7 +36,7 @@ fn run() -> Result<()> {
             _ => bail!("unexpected argument: {arg}"),
         }
     }
-    let mode = mode.context("expected api, mcp, history, or version")?;
+    let mode = mode.context("expected api, mcp, hook, history, or version")?;
     if mode == "version" {
         let sqlite_source_id: String = rusqlite::Connection::open_in_memory()?.query_row(
             "SELECT sqlite_source_id()",
@@ -79,6 +81,19 @@ fn run() -> Result<()> {
             if !response.ok {
                 std::process::exit(1);
             }
+        }
+        "hook" => {
+            let provider: Provider =
+                serde_json::from_value(serde_json::json!(provider.context("provider required")?))?;
+            let output = hooks::run(
+                &mut store,
+                parse_launch()?,
+                provider,
+                serde_json::from_str(&input)?,
+            )?;
+            println!("{output}");
+            io::stdout().flush()?;
+            crash_point("after_injection");
         }
         _ => bail!("unknown command: {mode}"),
     }

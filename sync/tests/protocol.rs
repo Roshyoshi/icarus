@@ -237,6 +237,123 @@ fn identity_scopes_siblings_providers_resumes_and_stale_descendants() {
 }
 
 #[test]
+fn native_subagents_exchange_messages_and_hook_crashes_never_ack() {
+    let h = Harness::new();
+    let codex = h.actor("codex", "a", "codex-session", None);
+    let claude = h.actor("claude", "b", "claude-session", None);
+    let mut children = Vec::new();
+    for (actor, provider, session) in [
+        (&codex, "codex", "codex-session"),
+        (&claude, "claude", "claude-session"),
+    ] {
+        let output = hook(
+            &h,
+            actor,
+            provider,
+            json!({"hook_event_name":"SubagentStart","session_id":session,"agent_id":"child"}),
+            None,
+        );
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let member = h
+            .store()
+            .lookup(
+                &icarus_sync::types::LaunchId::try_from(actor.launch.clone()).unwrap(),
+                session,
+                Some("child"),
+            )
+            .unwrap()
+            .to_string();
+        children.push(Actor {
+            member,
+            launch: actor.launch.clone(),
+        });
+    }
+    let (a, b) = (&children[0], &children[1]);
+    h.call(a.req(json!({"method":"send","to":b.member,"body":"from Codex child"})));
+    for point in ["after_fetch", "after_injection"] {
+        let out = hook(
+            &h,
+            b,
+            "claude",
+            json!({"hook_event_name":"PostToolUse","session_id":"claude-session","agent_id":"child"}),
+            Some(point),
+        );
+        assert_eq!(out.status.code(), Some(86));
+        if point == "after_injection" {
+            assert!(String::from_utf8_lossy(&out.stdout).contains("from Codex child"));
+        }
+        assert_eq!(
+            h.call(b.req(json!({"method":"inbox"})))["messages"]
+                .as_array()
+                .unwrap()
+                .len(),
+            1
+        );
+    }
+    let batch = h.call(b.req(json!({"method":"inbox"})));
+    h.call(b.req(json!({"method":"ack","through":batch["messages"][0]["message"]})));
+    h.call(b.req(json!({"method":"send","to":a.member,"body":"from Claude child"})));
+    let event = json!({"hook_event_name":"SubagentStop","session_id":"codex-session","agent_id":"child","turn_id":"t1","stop_hook_active":false});
+    let out = hook(&h, a, "codex", event.clone(), None);
+    assert!(out.status.success());
+    let injected: Value = serde_json::from_slice(&out.stdout).unwrap();
+    assert_eq!(injected["decision"], "block");
+    assert!(out.stdout.len() < 16384);
+    let out = hook(&h, a, "codex", event, None);
+    assert_eq!(
+        serde_json::from_slice::<Value>(&out.stdout).unwrap(),
+        json!({})
+    );
+    assert!(
+        h.call(codex.req(json!({"method":"inbox"})))["messages"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    let batch = h.call(a.req(json!({"method":"inbox"})));
+    assert_eq!(batch["messages"][0]["body"], "from Claude child");
+    let unsafe_context = hook(
+        &h,
+        &codex,
+        "codex",
+        json!({"hook_event_name":"PostToolUse","session_id":"codex-session"}),
+        None,
+    );
+    assert_eq!(
+        serde_json::from_slice::<Value>(&unsafe_context.stdout).unwrap(),
+        json!({})
+    );
+}
+
+#[test]
+fn concurrent_hooks_fetch_the_same_prefix_and_continue_only_once() {
+    let h = Harness::new();
+    let a = h.actor("claude", "a", "s", None);
+    for n in 0..8 {
+        h.call(a.req(json!({"method":"send","to":a.member,"body":n.to_string()})));
+    }
+    let results: Vec<_> = thread::scope(|scope| {
+        let handles:Vec<_>=(0..8).map(|_|scope.spawn(||hook(&h,&a,"claude",json!({"hook_event_name":"Stop","session_id":"s","last_assistant_message":"done","stop_hook_active":false}),None))).collect();
+        handles.into_iter().map(|h| h.join().unwrap()).collect()
+    });
+    assert!(results.iter().all(|r| r.status.success()), "{results:?}");
+    assert_eq!(
+        results
+            .iter()
+            .filter(|r| String::from_utf8_lossy(&r.stdout).contains("\"decision\":\"block\""))
+            .count(),
+        1
+    );
+    let batch = h.call(a.req(json!({"method":"inbox"})));
+    assert_eq!(batch["messages"][0]["sequence"], 1);
+    assert_eq!(batch["batch_end"], 4);
+}
+
+#[test]
 fn protocol_rejects_invalid_ids_versions_and_unfetched_acks() {
     let h = Harness::new();
     let a = h.actor("codex", "a", "s", None);
