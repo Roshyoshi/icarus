@@ -14,16 +14,6 @@ import (
 	"syscall"
 )
 
-const usage = `icarus template import codex|claude NAME --from PATH [--instruction PATH] [--skill PATH]
-icarus new codex|claude ID [--template NAME] [--profile NAME] [--group GROUP] [-- NATIVE_ARGS...]
-icarus open codex|claude ID [--profile NAME] [--group GROUP] [-- NATIVE_ARGS...]
-icarus list
-
-new creates a persistent, logged-out instance and opens its native CLI.
-Runtime data: ICARUS_HOME (default ~/.local/share/icarus).
-Profile names select Codex's NAME.config.toml. Additional args follow --.
-`
-
 var labelPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$`)
 
 type Instance struct {
@@ -37,69 +27,107 @@ type Instance struct {
 type Paths struct{ Home string }
 
 func Run(args []string) error {
-	if len(args) == 0 || args[0] == "--help" || args[0] == "help" {
-		fmt.Print(usage)
+	if len(args) == 0 || isHelp(args[0]) || args[0] == "help" {
+		printHelp("")
 		return nil
 	}
-	if args[0] == "version" {
-		fmt.Println("icarus 0.1.0 (subprocess protocol v1)")
+	command := args[0]
+	switch command {
+	case "template":
+		return importCommand(args[1:])
+	case "new", "open", "list", "version":
+		if len(args) > 1 && isHelp(args[1]) {
+			printHelp(command)
+			return nil
+		}
+	default:
+		return usageError("", "unknown command %q", command)
+	}
+	if command == "list" || command == "version" {
+		if len(args) > 1 {
+			return usageError(command, "unexpected argument %q", args[1])
+		}
+		if command == "version" {
+			fmt.Println("icarus 0.1.0 (subprocess protocol v1)")
+			return nil
+		}
+		p, err := runtimePaths()
+		if err != nil {
+			return err
+		}
+		return p.list()
+	}
+	if len(args) < 3 {
+		if len(args) == 2 && (args[1] == "codex" || args[1] == "claude") {
+			return usageError(command, "missing instance ID")
+		}
+		return usageError(command, "expected a provider (codex or claude) and an instance ID")
+	}
+	if isHelp(args[2]) && (args[1] == "codex" || args[1] == "claude") {
+		printHelp(command)
 		return nil
 	}
+	provider, id := args[1], args[2]
+	if err := validate(provider, id); err != nil {
+		return usageError(command, "%v", err)
+	}
+	flags := flag.NewFlagSet(command, flag.ContinueOnError)
+	flags.SetOutput(io.Discard)
+	template := "default"
+	if command == "new" {
+		flags.StringVar(&template, "template", "default", "template snapshot")
+	}
+	profile := flags.String("profile", "", "native Codex settings profile")
+	group := flags.String("group", "default", "coordination group")
+	if err := flags.Parse(args[3:]); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			printHelp(command)
+			return nil
+		}
+		return usageError(command, "%v", err)
+	}
+	if !labelPattern.MatchString(template) {
+		return usageError(command, "invalid template label %q", template)
+	}
+	if !labelPattern.MatchString(*group) {
+		return usageError(command, "invalid group label %q", *group)
+	}
+	if *profile != "" && (provider != "codex" || !labelPattern.MatchString(*profile)) {
+		return usageError(command, "--profile requires a valid Codex profile name")
+	}
+	p, err := runtimePaths()
+	if err != nil {
+		return err
+	}
+	if command == "new" {
+		if _, err := p.create(provider, id, template); err != nil {
+			return err
+		}
+	}
+	return p.launch(provider, id, *profile, *group, flags.Args())
+}
+
+func runtimePaths() (Paths, error) {
 	home := os.Getenv("ICARUS_HOME")
 	if home == "" {
 		userHome, err := os.UserHomeDir()
 		if err != nil {
-			return err
+			return Paths{}, err
 		}
 		home = filepath.Join(userHome, ".local", "share", "icarus")
 	}
 	home, err := filepath.Abs(home)
 	if err != nil {
-		return err
+		return Paths{}, err
 	}
 	if err := os.MkdirAll(home, 0700); err != nil {
-		return err
+		return Paths{}, err
 	}
 	home, err = filepath.EvalSymlinks(home)
 	if err != nil {
-		return err
+		return Paths{}, err
 	}
-	p := Paths{home}
-	if args[0] == "list" {
-		return p.list()
-	}
-	if args[0] == "template" {
-		return p.importCommand(args[1:])
-	}
-	if len(args) < 3 || (args[0] != "new" && args[0] != "open") {
-		return errors.New(usage)
-	}
-	provider, id := args[1], args[2]
-	if err := validate(provider, id); err != nil {
-		return err
-	}
-	flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	template := flags.String("template", "default", "template snapshot")
-	profile := flags.String("profile", "", "native Codex settings profile")
-	group := flags.String("group", "default", "coordination group")
-	if err := flags.Parse(args[3:]); err != nil {
-		return err
-	}
-	if !labelPattern.MatchString(*template) || !labelPattern.MatchString(*group) {
-		return errors.New("invalid template or group label")
-	}
-	if *profile != "" && (provider != "codex" || !labelPattern.MatchString(*profile)) {
-		return errors.New("--profile requires a valid Codex profile name")
-	}
-	if args[0] == "open" && *template != "default" {
-		return errors.New("--template only applies to new instances")
-	}
-	if args[0] == "new" {
-		if _, err := p.create(provider, id, *template); err != nil {
-			return err
-		}
-	}
-	return p.launch(provider, id, *profile, *group, flags.Args())
+	return Paths{home}, nil
 }
 
 func validate(provider, id string) error {

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -28,24 +29,58 @@ type pathsFlag []string
 func (p *pathsFlag) String() string     { return strings.Join(*p, ",") }
 func (p *pathsFlag) Set(s string) error { *p = append(*p, s); return nil }
 
-func (p Paths) importCommand(args []string) error {
-	if len(args) < 3 || args[0] != "import" {
-		return errors.New(usage)
+func importCommand(args []string) error {
+	if len(args) == 0 {
+		return usageError("template", "missing subcommand")
+	}
+	if isHelp(args[0]) {
+		printHelp("template")
+		return nil
+	}
+	if args[0] != "import" {
+		return usageError("template", "unknown subcommand %q", args[0])
+	}
+	const command = "template import"
+	if len(args) > 1 && isHelp(args[1]) {
+		printHelp(command)
+		return nil
+	}
+	if len(args) < 3 {
+		return usageError(command, "expected a provider (codex or claude) and a template name")
+	}
+	if isHelp(args[2]) && (args[1] == "codex" || args[1] == "claude") {
+		printHelp(command)
+		return nil
 	}
 	provider, name := args[1], args[2]
 	if err := validate(provider, name); err != nil {
-		return err
+		return usageError(command, "%v", err)
 	}
-	f := flag.NewFlagSet("template import", flag.ContinueOnError)
+	f := flag.NewFlagSet(command, flag.ContinueOnError)
+	f.SetOutput(io.Discard)
 	from := f.String("from", "", "settings source directory")
 	var instructions, skills pathsFlag
 	f.Var(&instructions, "instruction", "explicit instruction file (one)")
 	f.Var(&skills, "skill", "explicit skill directory (repeatable)")
 	if err := f.Parse(args[3:]); err != nil {
-		return err
+		if errors.Is(err, flag.ErrHelp) {
+			printHelp(command)
+			return nil
+		}
+		return usageError(command, "%v", err)
 	}
-	if *from == "" || len(f.Args()) != 0 || len(instructions) > 1 {
-		return errors.New("--from is required; at most one --instruction")
+	if len(f.Args()) != 0 {
+		return usageError(command, "unexpected argument %q", f.Args()[0])
+	}
+	if *from == "" {
+		return usageError(command, "missing required option --from PATH")
+	}
+	if len(instructions) > 1 {
+		return usageError(command, "at most one --instruction is allowed")
+	}
+	p, err := runtimePaths()
+	if err != nil {
+		return err
 	}
 	report, err := p.importTemplate(provider, name, *from, instructions, skills)
 	if err != nil {
