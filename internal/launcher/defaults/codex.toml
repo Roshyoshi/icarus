@@ -1,0 +1,13 @@
+model = "gpt-6-astra"
+model_reasoning_effort = "max"
+plan_mode_reasoning_effort = "xhigh"
+personality = "pragmatic"
+approvals_reviewer = "auto_review"
+
+[tui]
+fullscreen_transcript = false
+alternate_screen = "never"
+status_line = ["model-with-reasoning", "current-dir"]
+status_line_use_colors = true
+theme = "ansi"
+terminal_title = ["activity", "thread-name", "project-name"]
