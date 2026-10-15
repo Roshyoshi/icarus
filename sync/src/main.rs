@@ -1,5 +1,5 @@
 use anyhow::{Context, Result, bail, ensure};
-use icarus_sync::{store::Store, types::*, wake};
+use icarus_sync::{mcp, store::Store, types::*, wake};
 use std::{
     io::{self, Read, Write},
     path::PathBuf,
@@ -16,15 +16,17 @@ fn main() {
 fn run() -> Result<()> {
     let mut home = std::env::var_os("ICARUS_HOME").map(PathBuf::from);
     let mut group = std::env::var("ICARUS_GROUP").ok();
+    let mut launch = std::env::var("ICARUS_LAUNCH").ok();
     let mut mode = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--home" => home = Some(args.next().context("--home requires path")?.into()),
             "--group" => group = Some(args.next().context("--group requires ID")?),
+            "--launch" => launch = Some(args.next().context("--launch requires ID")?),
             "--help" | "-h" => {
                 println!(
-                    "icarus-sync [--home PATH] [--group GROUP] api|history\nicarus-sync version\nJSON protocol v1; api reads one request from stdin. See docs/protocol.md."
+                    "icarus-sync [--home PATH] [--group GROUP] [--launch ID] api|mcp|history\nicarus-sync version\nJSON protocol v1; api reads one request from stdin. See docs/protocol.md."
                 );
                 return Ok(());
             }
@@ -32,7 +34,7 @@ fn run() -> Result<()> {
             _ => bail!("unexpected argument: {arg}"),
         }
     }
-    let mode = mode.context("expected api, history, or version")?;
+    let mode = mode.context("expected api, mcp, history, or version")?;
     if mode == "version" {
         let sqlite_source_id: String = rusqlite::Connection::open_in_memory()?.query_row(
             "SELECT sqlite_source_id()",
@@ -48,6 +50,10 @@ fn run() -> Result<()> {
     }
     let home = home.context("ICARUS_HOME or --home required")?;
     let group = GroupId::try_from(group.context("ICARUS_GROUP or --group required")?)?;
+    let parse_launch = || LaunchId::try_from(launch.clone().context("launch required")?);
+    if mode == "mcp" {
+        return mcp::serve(home, group, parse_launch()?);
+    }
     let mut store = Store::open(&home, &group)?;
     if mode == "history" {
         println!("{}", store.history()?);
