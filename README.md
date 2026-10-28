@@ -1,7 +1,5 @@
 # Icarus
 
-What if agents had systems concurrency guarantees?
-
 Icarus runs separate native Codex and Claude instances and gives their agents
 durable local mailboxes, task results, and shared versioned state.
 
